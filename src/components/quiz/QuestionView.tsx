@@ -32,8 +32,13 @@ export function QuestionView({ question, draft, onChange, headingLevel = "h1" }:
   return (
     <section className="flex flex-col gap-4">
       <div>
-        <Heading className="text-2xl font-extrabold leading-tight">{questionTitle(question, draft)}</Heading>
+        <Heading className="text-[2rem] leading-tight">{questionTitle(question, draft)}</Heading>
         {question.help && <p className="mt-1 text-muted">{question.help}</p>}
+        {question.optional && (
+          <span className="mt-2 inline-block rounded-full bg-wash px-2.5 py-0.5 text-xs font-bold text-muted">
+            Optional
+          </span>
+        )}
       </div>
       <QuestionInput question={question} draft={draft} onChange={onChange} />
     </section>

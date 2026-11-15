@@ -75,9 +75,11 @@ export function TaskScreen() {
         <BookmarkButton id={`task:${task.id}`} href={taskHref(task.id)} title={task.title} sprite={task.sprite ?? section.sprite} />
       }
     >
-      <div className="mb-4 flex items-center gap-3 rounded-xl bg-wash px-3 py-1">
+      <div
+        className={`sketch-border mb-5 flex items-center gap-3 px-3 py-1 ${done ? "bg-accent-soft" : "bg-wash"}`}
+      >
         <Checkbox checked={done} onChange={(v) => app.setTaskDone(task.id, v)} label={`Mark "${task.title}" done`} />
-        <span className={`font-semibold ${done ? "text-muted line-through" : ""}`}>{done ? "Done" : "Mark as done"}</span>
+        <span className="font-hand text-2xl tracking-wide">{done ? "Done! Nice work" : "Mark as done"}</span>
       </div>
 
       {failed && <p className="font-semibold text-warn">Couldn&apos;t load this page. Try again in a moment.</p>}

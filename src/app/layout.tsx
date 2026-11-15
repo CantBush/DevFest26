@@ -1,11 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito } from "next/font/google";
+import { Nunito, Patrick_Hand } from "next/font/google";
 import { MapsProvider } from "@/components/maps/MapsProvider";
 import { AppStateProvider } from "@/components/state/AppState";
 import "./globals.css";
 
 const nunito = Nunito({
   variable: "--font-nunito",
+  subsets: ["latin"],
+});
+
+const patrickHand = Patrick_Hand({
+  variable: "--font-patrick",
+  weight: "400",
   subsets: ["latin"],
 });
 
@@ -17,12 +23,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f6f5f2",
+  themeColor: "#a87d58",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${nunito.variable} h-full antialiased`}>
+    <html lang="en" className={`${nunito.variable} ${patrickHand.variable} h-full antialiased`}>
       <body className="min-h-full">
         <AppStateProvider>
           <MapsProvider>{children}</MapsProvider>

@@ -8,7 +8,7 @@ export function Mascot({
   size = 40,
   className,
 }: {
-  sprite: SpriteId | "carry-1" | "carry-2";
+  sprite: SpriteId | "carry-1" | "carry-2" | "hello" | "blob";
   size?: number;
   className?: string;
 }) {

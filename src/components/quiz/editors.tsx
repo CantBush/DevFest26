@@ -89,7 +89,7 @@ export function PinEditor({
             type="button"
             disabled={!place}
             onClick={add}
-            className="flex min-h-11 items-center justify-center gap-1 rounded-full bg-ink font-bold text-paper disabled:opacity-30"
+            className="btn btn-dark min-h-11"
           >
             <PlusIcon size={18} /> Add pin
           </button>

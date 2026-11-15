@@ -22,9 +22,9 @@ function Block({ block, detail, profile }: { block: DetailBlock; detail: TaskDet
   switch (block.type) {
     case "heading":
       return block.level === 1 ? (
-        <h2 className="text-2xl font-extrabold leading-tight">{block.text}</h2>
+        <h2 className="text-3xl leading-tight">{block.text}</h2>
       ) : (
-        <h3 className="border-b-2 border-ink pb-1 text-lg font-extrabold">{block.text}</h3>
+        <h3 className="border-b-2 border-dashed border-ink/40 pb-1 text-2xl tracking-wide">{block.text}</h3>
       );
 
     case "text":
@@ -109,7 +109,7 @@ function Block({ block, detail, profile }: { block: DetailBlock; detail: TaskDet
                         countryCode: profile.destination.place.countryCode,
                       })
                     }
-                    className="mt-2 min-h-11 self-start rounded-full bg-ink px-4 text-sm font-bold text-paper disabled:bg-transparent disabled:text-ink"
+                    className="btn btn-dark mt-2 min-h-11 self-start px-4 text-sm disabled:bg-ok disabled:text-paper disabled:opacity-100"
                   >
                     {chosen ? "Chosen area" : "Choose this area"}
                   </button>

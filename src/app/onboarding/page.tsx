@@ -51,28 +51,35 @@ function Quiz({ onBuild }: { onBuild: (profile: Profile) => Promise<void> }) {
   if (!started) {
     return (
       <AppShell showHome={false}>
-        <div className="flex flex-1 flex-col items-center justify-center gap-6 text-center">
-          <Mascot sprite="box" size={140} className="animate-bob" />
+        <div className="flex flex-1 flex-col items-center justify-center gap-7 text-center">
+          <div className="relative">
+            <Mascot sprite="box" size={170} className="animate-bob" />
+            <Mascot sprite="hello" size={76} className="absolute -right-14 -bottom-2" />
+          </div>
           <div>
-            <h1 className="text-4xl font-extrabold">Movingly</h1>
-            <p className="mt-2 text-lg text-muted">
+            <h1 className="text-6xl leading-none">Movingly</h1>
+            <p className="mx-auto mt-3 max-w-xs text-lg text-muted">
               A few questions about your move, then a checklist made just for you.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setStarted(true)}
-            className="min-h-12 w-full rounded-full bg-accent text-lg font-bold text-paper"
-          >
-            Start
+          <ul className="font-hand flex flex-col gap-1 text-left text-xl tracking-wider uppercase">
+            {["Tell us about the move", "Get your checklist", "Tick it off"].map((step, n) => (
+              <li key={step} className="flex items-center gap-3">
+                <span className="sketch-border flex h-7 w-7 items-center justify-center text-base">{n + 1}</span>
+                {step}
+              </li>
+            ))}
+          </ul>
+          <button type="button" onClick={() => setStarted(true)} className="btn btn-primary w-full text-lg">
+            Let&apos;s start
           </button>
-          <div className="flex flex-col gap-1 text-sm text-muted">
-            <span>Or try a demo profile:</span>
-            <div className="flex justify-center gap-3 font-semibold text-ink">
-              <button type="button" className="underline" onClick={() => onBuild(sampleInternationalProfile)}>
+          <div className="flex flex-col gap-2 text-sm text-muted">
+            <span>Or peek at a demo move:</span>
+            <div className="flex justify-center gap-2">
+              <button type="button" className="btn btn-plain min-h-11 px-4 text-sm" onClick={() => onBuild(sampleInternationalProfile)}>
                 Seattle to Seoul
               </button>
-              <button type="button" className="underline" onClick={() => onBuild(sampleDomesticProfile)}>
+              <button type="button" className="btn btn-plain min-h-11 px-4 text-sm" onClick={() => onBuild(sampleDomesticProfile)}>
                 Chicago to Austin
               </button>
             </div>
@@ -123,7 +130,7 @@ function Quiz({ onBuild }: { onBuild: (profile: Profile) => Promise<void> }) {
         {error && <p className="font-semibold text-warn">{error}</p>}
 
         <div className="mt-auto flex items-center gap-3 pt-4">
-          <button type="button" onClick={back} className="min-h-12 rounded-full px-5 font-bold hover:bg-wash">
+          <button type="button" onClick={back} className="min-h-12 rounded-full px-4 font-bold hover:bg-wash">
             Back
           </button>
           <div className="flex-1" />
@@ -132,7 +139,7 @@ function Quiz({ onBuild }: { onBuild: (profile: Profile) => Promise<void> }) {
               type="button"
               onClick={finish}
               disabled={!question.optional && !answered}
-              className="min-h-12 rounded-full bg-accent px-6 font-bold text-paper disabled:opacity-40"
+              className="btn btn-primary"
             >
               Build my checklist
             </button>
@@ -141,7 +148,7 @@ function Quiz({ onBuild }: { onBuild: (profile: Profile) => Promise<void> }) {
               type="button"
               onClick={next}
               disabled={!question.optional && !answered}
-              className="min-h-12 rounded-full bg-ink px-6 font-bold text-paper disabled:opacity-30"
+              className={`btn ${question.optional && !answered ? "btn-plain" : "btn-dark"}`}
             >
               {question.optional && !answered ? "Skip" : "Next"}
             </button>

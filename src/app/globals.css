@@ -1,32 +1,132 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-ink: #111111;
-  --color-paper: #ffffff;
-  --color-muted: #6b6b6b;
-  --color-line: #e4e4e4;
-  --color-wash: #f6f5f2;
-  --color-accent: #ff6a3d;
-  --color-accent-soft: #ffe9e1;
-  --color-ok: #2f8f5b;
-  --color-warn: #b45309;
+  --color-ink: #1f1c19;
+  --color-paper: #fcfaf5;
+  --color-muted: #6c655c;
+  --color-line: #e6dfd2;
+  --color-wash: #f3eee4;
+  --color-board: #a87d58;
+  --color-board-dark: #8f6645;
+  --color-note: #fdeaa7;
+  --color-accent: #c4502f;
+  --color-accent-soft: #fbe4d8;
+  --color-ok: #2f7a50;
+  --color-warn: #a6470b;
   --font-sans: var(--font-nunito);
+  --font-hand: var(--font-patrick);
 }
 
 html,
 body {
-  background: var(--color-wash);
   color: var(--color-ink);
+  background-color: var(--color-board);
+  /* Cork-board speckle; pure CSS so there is no image to load. */
+  background-image:
+    radial-gradient(circle at 20% 30%, rgb(255 255 255 / 0.07) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 70% 80%, rgb(0 0 0 / 0.08) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 40% 70%, rgb(0 0 0 / 0.05) 0 1.5px, transparent 2px);
+  background-size:
+    7px 7px,
+    11px 11px,
+    17px 17px;
 }
 
 body {
   font-family: var(--font-nunito), system-ui, sans-serif;
 }
 
-/* Hand-drawn feel for checkboxes and cards, matching the sketch. */
-.sketch-border {
-  border: 2px solid var(--color-ink);
-  border-radius: 10px 12px 9px 11px / 11px 9px 12px 10px;
+@layer components {
+  /* Patrick Hand ships one weight; turning off synthetic bold keeps the strokes
+     clean when a heading also carries a font-bold class. */
+  h1,
+  h2,
+  h3,
+  .font-hand {
+    font-family: var(--font-patrick), var(--font-nunito), system-ui, sans-serif;
+    font-synthesis-weight: none;
+    letter-spacing: 0.02em;
+  }
+
+  .paper-sheet {
+    background: var(--color-paper);
+    border-radius: 6px;
+    box-shadow:
+      0 1px 0 rgb(0 0 0 / 0.04),
+      0 10px 24px -6px rgb(60 35 15 / 0.45);
+  }
+
+  /* Hand-drawn feel for cards and inputs, matching the sketch. */
+  .sketch-border {
+    border: 2px solid var(--color-ink);
+    border-radius: 10px 14px 9px 12px / 12px 9px 14px 10px;
+  }
+
+  /* Chunky sticker buttons: thick outline with an offset ink shadow. */
+  .btn {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0 1.5rem;
+    border: 2.5px solid var(--color-ink);
+    border-radius: 14px 18px 13px 17px / 17px 13px 18px 14px;
+    box-shadow: 3px 3px 0 var(--color-ink);
+    font-weight: 800;
+    transition:
+      transform 80ms ease,
+      box-shadow 80ms ease,
+      background-color 120ms ease;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--color-ink);
+  }
+
+  .btn:disabled {
+    opacity: 0.4;
+    box-shadow: none;
+  }
+
+  .btn-primary {
+    background: var(--color-accent);
+    color: #fff;
+  }
+
+  .btn-dark {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .btn-plain {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  .btn-plain:hover:not(:disabled) {
+    background: var(--color-wash);
+  }
+
+  .sticky-note {
+    background: var(--color-note);
+    border-radius: 2px 2px 14px 2px;
+    box-shadow: 0 6px 12px -6px rgb(60 35 15 / 0.45);
+    transform: rotate(-1deg);
+  }
+
+  .tape {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    width: 72px;
+    height: 20px;
+    translate: -50% 0;
+    rotate: 2deg;
+    background: rgb(255 255 255 / 0.55);
+    border: 1px solid rgb(0 0 0 / 0.05);
+  }
 }
 
 @keyframes mascot-bob {
@@ -43,8 +143,26 @@ body {
   animation: mascot-bob 0.8s ease-in-out infinite;
 }
 
+@keyframes tick-draw {
+  from {
+    stroke-dashoffset: 40;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.tick-draw {
+  stroke-dasharray: 40;
+  animation: tick-draw 220ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-bob {
+  .animate-bob,
+  .tick-draw {
     animation: none;
+  }
+  .btn {
+    transition: none;
   }
 }

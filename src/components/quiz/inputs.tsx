@@ -23,12 +23,22 @@ export function ChoiceButtons<T extends string>({
             role="radio"
             aria-checked={selected}
             onClick={() => onChange(o.value)}
-            className={`sketch-border min-h-14 px-4 py-3 text-left transition ${
-              selected ? "bg-accent-soft font-bold" : "bg-paper hover:bg-wash"
+            className={`sketch-border flex min-h-14 items-center gap-3 px-4 py-3 text-left transition ${
+              selected ? "bg-accent-soft shadow-[3px_3px_0_var(--color-ink)]" : "bg-paper hover:bg-wash"
             }`}
           >
-            <span className="block text-base">{o.label}</span>
-            {o.hint && <span className="block text-sm text-muted">{o.hint}</span>}
+            <span
+              aria-hidden="true"
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-ink ${
+                selected ? "bg-paper" : ""
+              }`}
+            >
+              {selected && <span className="h-2.5 w-2.5 rounded-full bg-accent" />}
+            </span>
+            <span className="flex-1">
+              <span className={`block text-base ${selected ? "font-bold" : "font-semibold"}`}>{o.label}</span>
+              {o.hint && <span className="block text-sm text-muted">{o.hint}</span>}
+            </span>
           </button>
         );
       })}
@@ -50,10 +60,11 @@ export function Chip({
   return (
     <span
       className={`inline-flex min-h-11 items-center gap-1 rounded-full border-2 border-ink text-sm transition ${
-        selected ? "bg-ink text-paper" : "bg-paper hover:bg-wash"
+        selected ? "bg-accent-soft shadow-[2px_2px_0_var(--color-ink)]" : "bg-paper hover:bg-wash"
       }`}
     >
       <button type="button" onClick={onClick} aria-pressed={selected} className="px-4 py-2 font-semibold">
+        {selected && !onRemove && <span aria-hidden="true">✓ </span>}
         {children}
       </button>
       {onRemove && (

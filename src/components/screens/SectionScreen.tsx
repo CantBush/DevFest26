@@ -48,11 +48,14 @@ export function SectionScreen() {
         />
       }
     >
-      <div className="mb-3 flex items-center gap-3">
-        <Mascot sprite={section.sprite} size={56} />
-        <p className="font-semibold text-muted">
-          {done} of {total} done
-        </p>
+      <div className="mb-4 flex items-center gap-4 border-b-2 border-dashed border-line pb-4">
+        <Mascot sprite={section.sprite} size={80} />
+        <div>
+          <p className="font-hand text-3xl leading-none">
+            {done} <span className="text-muted">/ {total}</span>
+          </p>
+          <p className="text-sm font-semibold text-muted">{done === total && total > 0 ? "All done!" : "tasks done"}</p>
+        </div>
       </div>
 
       <ul className="flex flex-col gap-1">

@@ -33,12 +33,14 @@ export function LoadingMascot({
       aria-live="polite"
       className={
         fullScreen
-          ? "fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-wash/95"
+          ? "fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-board"
           : "flex flex-col items-center justify-center gap-4 py-16"
       }
     >
-      <Mascot sprite={frame} size={112} />
-      <p className="text-base font-semibold text-muted">{message}</p>
+      <div className={fullScreen ? "paper-sheet flex w-64 flex-col items-center gap-3 px-6 py-8" : "contents"}>
+        <Mascot sprite={frame} size={120} />
+        <p className="font-hand text-center text-2xl tracking-wide">{message}</p>
+      </div>
     </div>
   );
 }

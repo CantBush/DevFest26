@@ -24,8 +24,8 @@ export default function ImportantPage() {
     <AppShell backHref="/home" title="Important!">
       {bookmarks.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-12 text-center">
-          <Mascot sprite="papers" size={96} />
-          <p className="text-lg font-bold">Nothing saved yet</p>
+          <Mascot sprite="blob" size={120} />
+          <p className="font-hand text-3xl">Nothing saved yet</p>
           <p className="text-muted">Tap the bookmark on any section or task page to keep it here.</p>
         </div>
       ) : (

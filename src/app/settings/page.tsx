@@ -48,24 +48,24 @@ export default function SettingsPage() {
   return (
     <AppShell backHref="/home" title="Settings">
       {message && (
-        <p role="status" className="mb-4 rounded-xl bg-accent-soft p-3 text-sm font-semibold">
+        <p role="status" className="sticky-note relative mb-5 p-3 text-sm font-semibold">
           {message}
         </p>
       )}
 
-      <h2 className="mb-2 text-sm font-extrabold uppercase tracking-wide text-muted">Your answers</h2>
+      <h2 className="mb-3 text-xl tracking-wider text-muted uppercase">Your answers</h2>
       <div className="flex flex-col gap-3">
         {QUIZ_SECTIONS.map((section) => (
-          <section key={section.id} className="sketch-border bg-paper p-3">
+          <section key={section.id} className="sketch-border bg-paper p-4">
             <div className="mb-2 flex items-center justify-between gap-2">
-              <h3 className="text-lg font-extrabold">{section.title}</h3>
+              <h3 className="text-2xl leading-tight">{section.title}</h3>
               <button
                 type="button"
                 onClick={() => {
                   setMessage(null);
                   setEditing(section.id);
                 }}
-                className="min-h-11 rounded-full px-4 text-sm font-bold underline hover:bg-wash"
+                className="btn btn-plain min-h-10 px-4 text-sm"
               >
                 Edit
               </button>
@@ -82,15 +82,15 @@ export default function SettingsPage() {
         ))}
       </div>
 
-      <h2 className="mb-2 mt-8 text-sm font-extrabold uppercase tracking-wide text-muted">Account</h2>
+      <h2 className="mt-8 mb-3 text-xl tracking-wider text-muted uppercase">Account</h2>
       <div className="flex flex-col gap-3">
-        <button type="button" onClick={linkGoogle} className="sketch-border min-h-12 bg-paper px-4 text-left font-bold">
+        <button type="button" onClick={linkGoogle} className="btn btn-plain justify-start">
           Save my plan to my Google account
         </button>
         <button
           type="button"
           onClick={startOver}
-          className="min-h-12 rounded-xl border-2 border-warn px-4 text-left font-bold text-warn"
+          className="btn btn-plain justify-start border-warn text-warn shadow-[3px_3px_0_var(--color-warn)]"
         >
           Start over
         </button>
@@ -148,7 +148,7 @@ function SectionEditor({
         <button type="button" onClick={onCancel} className="min-h-12 flex-1 rounded-full font-bold hover:bg-wash">
           Cancel
         </button>
-        <button type="button" onClick={save} className="min-h-12 flex-1 rounded-full bg-accent font-bold text-paper">
+        <button type="button" onClick={save} className="btn btn-primary flex-1">
           Save changes
         </button>
       </div>
