@@ -96,6 +96,11 @@ function Quiz({
               </button>
             </div>
           </div>
+          {buildError && (
+            <p role="alert" className="font-semibold text-warn">
+              {buildError}
+            </p>
+          )}
         </div>
       </AppShell>
     );

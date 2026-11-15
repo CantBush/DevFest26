@@ -1,11 +1,12 @@
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import type { Checklist, FactPack, Profile, TaskDetail } from "@/lib/types";
 import { FactPackSchema, TaskDetailSchema } from "@/lib/types";
-import { adminApp } from "@/lib/firebase/admin";
+import { LOCAL_DEV_UID, adminApp } from "@/lib/firebase/admin";
 import { checklistFromDoc, profileFromUserDoc, withoutUndefined } from "@/lib/firebase/docs";
 import { nextRegenerationCount } from "@/lib/firebase/regen-cap";
 
-function database(): Firestore | null {
+function database(uid: string): Firestore | null {
+  if (uid === LOCAL_DEV_UID) return null;
   try {
     return getFirestore(adminApp());
   } catch (error) {
@@ -15,7 +16,7 @@ function database(): Firestore | null {
 }
 
 export async function consumeRegeneration(uid: string, profileVersion: number): Promise<"ok" | "capped"> {
-  const db = database();
+  const db = database(uid);
   if (!db) {
     if (process.env.NODE_ENV === "production") {
       throw new Error("Could not check the regeneration cap.");
@@ -43,7 +44,7 @@ export async function consumeRegeneration(uid: string, profileVersion: number): 
 
 export async function loadReusableFactPack(uid: string, profile: Profile): Promise<FactPack | undefined> {
   if (profile.scope !== "international") return undefined;
-  const db = database();
+  const db = database(uid);
   if (!db) return undefined;
   try {
     const [userSnap, planSnap] = await Promise.all([
@@ -65,7 +66,7 @@ export async function loadReusableFactPack(uid: string, profile: Profile): Promi
 }
 
 export async function cachePlan(uid: string, checklist: Checklist): Promise<void> {
-  const db = database();
+  const db = database(uid);
   if (!db) return;
   try {
     await db.doc(`users/${uid}/plan/current`).set(withoutUndefined(checklist));
@@ -75,7 +76,7 @@ export async function cachePlan(uid: string, checklist: Checklist): Promise<void
 }
 
 export async function cachedTaskDetail(uid: string, taskId: string, inputsHash: string): Promise<TaskDetail | undefined> {
-  const db = database();
+  const db = database(uid);
   if (!db) return undefined;
   try {
     const snap = await db.doc(`users/${uid}/taskDetails/${taskId}`).get();
@@ -89,7 +90,7 @@ export async function cachedTaskDetail(uid: string, taskId: string, inputsHash: 
 }
 
 export async function cacheTaskDetail(uid: string, detail: TaskDetail): Promise<void> {
-  const db = database();
+  const db = database(uid);
   if (!db) return;
   try {
     await db.doc(`users/${uid}/taskDetails/${detail.taskId}`).set(withoutUndefined(detail));

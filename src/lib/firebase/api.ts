@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import { getIdToken } from "@/lib/firebase/client";
+import { getIdToken, isFirebaseConfigured } from "@/lib/firebase/client";
 import {
   ChecklistSchema,
   PlaceInfoSchema,
@@ -17,7 +17,8 @@ import {
 } from "@/lib/types";
 
 // Browser client for the four live routes. Each call signs in, sends the
-// Firebase ID token, and checks the JSON against the shared schemas.
+// Firebase ID token, and checks the JSON against the shared schemas. Without
+// Firebase config the token is left off; only the dev server accepts that.
 
 export class ApiError extends Error {
   readonly status: number;
@@ -45,12 +46,12 @@ const CommuteResponseSchema = z.object({
 });
 
 async function postJson<T>(path: string, body: unknown, schema: z.ZodType<T>): Promise<T> {
-  const token = await getIdToken();
+  const token = isFirebaseConfigured ? await getIdToken() : null;
   const response = await fetch(path, {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${token}`,
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
     },
     body: JSON.stringify(body),
   });

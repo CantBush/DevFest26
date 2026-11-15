@@ -1,6 +1,9 @@
 import { applicationDefault, cert, getApps, initializeApp, type App } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 
+// Stand-in user for `npm run dev` without Firebase. Nothing is stored for it.
+export const LOCAL_DEV_UID = "local-dev";
+
 export class AuthError extends Error {
   constructor(message: string) {
     super(message);
@@ -30,6 +33,8 @@ export async function requireUid(request: Request): Promise<string> {
   const header = request.headers.get("authorization") ?? "";
   const match = /^Bearer\s+(.+)$/i.exec(header);
   const token = match?.[1]?.trim();
+  // Lets `npm run dev` work before Firebase is set up. Deployed builds always require a token.
+  if (!token && process.env.NODE_ENV === "development") return LOCAL_DEV_UID;
   if (!token) throw new AuthError("Missing bearer token.");
   try {
     const decoded = await getAuth(adminApp()).verifyIdToken(token);

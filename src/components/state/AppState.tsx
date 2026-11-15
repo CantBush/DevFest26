@@ -80,6 +80,7 @@ const subscribeNever = () => () => {};
 const PLACE_SEARCH_RADIUS_M = 8000;
 
 async function rememberPlan(profile: Profile, checklist: Checklist) {
+  if (!isFirebaseConfigured) return;
   try {
     await persistProfile(profile);
     await savePlan(checklist);
@@ -89,6 +90,7 @@ async function rememberPlan(profile: Profile, checklist: Checklist) {
 }
 
 async function rememberDetail(detail: TaskDetail) {
+  if (!isFirebaseConfigured) return;
   try {
     await saveTaskDetail(detail);
   } catch (error) {
@@ -248,7 +250,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   const resetAll = useCallback(() => {
     setState(EMPTY);
-    void startOver().catch(() => {});
+    if (isFirebaseConfigured) void startOver().catch(() => {});
   }, []);
 
   const linkGoogleAccount = useCallback(async () => {

@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { sampleChecklist, sampleInternationalProfile } from "@/lib/fixtures";
 
 vi.mock("@/lib/firebase/client", () => ({
+  isFirebaseConfigured: true,
   getIdToken: vi.fn(async () => "token"),
 }));
 
