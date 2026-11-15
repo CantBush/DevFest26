@@ -1,6 +1,8 @@
 import type { Profile, SectionId, SpriteId, TaskTemplate } from "@/lib/types";
+import { hobbyInterests, moveMonth, packingVehicle } from "@/lib/checklist/packing";
 import {
   countryName,
+  focusPlace,
   formatMoney,
   hasDisabilities,
   keepsACar,
@@ -18,6 +20,7 @@ export type TemplateEntry = TaskTemplate & {
 export const SECTION_META: Record<SectionId, { title: string; sprite: SpriteId; pinned?: boolean }> = {
   visa: { title: "Visa and entry", sprite: "airplane", pinned: true },
   moveOut: { title: "Moving out", sprite: "box" },
+  packing: { title: "Packing List", sprite: "suitcase" },
   housing: { title: "Housing", sprite: "umbrella" },
   paperwork: { title: "Paperwork", sprite: "papers" },
   health: { title: "Health", sprite: "bandage" },
@@ -68,6 +71,25 @@ function packingSummary(profile: Profile): string {
   const kept = profile.keepItems.filter((item) => item.trim());
   const keep = kept.length > 0 ? ` You plan to keep ${kept.join(", ")}.` : "";
   return `Split belongings into ship, carry-on, sell, donate, and leave behind.${keep} Label boxes by room and pack a first-week bag separately.`;
+}
+
+function firstNightSummary(profile: Profile): string {
+  const { people, kids, pets } = profile.household;
+  const extras = [
+    kids.length > 0 ? "a comfort item for each child" : null,
+    pets.length > 0 ? "two days of pet food" : null,
+    hasDisabilities(profile) ? "daily medication and equipment chargers" : null,
+  ].filter(Boolean);
+  const who = people > 1 ? `all ${people} of you` : "you";
+  return `Pack toiletries, a change of clothes, bedding, chargers, and snacks for ${who}${extras.length ? `, plus ${extras.join(", ")}` : ""}. Keep this bag with you.`;
+}
+
+function clothesSummary(profile: Profile): string {
+  const month = moveMonth(profile);
+  const city = focusPlace(profile).label.split(",")[0];
+  return month
+    ? `Pack two weeks of clothes for ${city} in ${month}. Check the usual weather there before you choose.`
+    : `Pack two weeks of clothes for the weather in ${city}.`;
 }
 
 function petSummary(profile: Profile): string {
@@ -223,17 +245,6 @@ export const TASK_TEMPLATES: readonly TemplateEntry[] = [
     daysBeforeMove: 0,
   },
   {
-    id: "moveOut.packing",
-    sectionId: "moveOut",
-    title: "Packing plan",
-    defaultSummary: "Split belongings into ship, carry, sell, donate, and leave behind. Pack a first-week bag last.",
-    summarize: packingSummary,
-    dependsOn: ["moveDate", "keepItems", "scope", ...DISABILITY],
-    detailKind: "generic",
-    priority: "normal",
-    daysBeforeMove: 21,
-  },
-  {
     id: "moveOut.moveDay",
     sectionId: "moveOut",
     title: "Move day plan",
@@ -308,6 +319,146 @@ export const TASK_TEMPLATES: readonly TemplateEntry[] = [
     detailKind: "generic",
     priority: "normal",
     daysBeforeMove: 14,
+  },
+  {
+    id: "packing.plan",
+    sectionId: "packing",
+    title: "Packing plan",
+    defaultSummary: "Split belongings into ship, carry, sell, donate, and leave behind. Pack a first-week bag last.",
+    summarize: packingSummary,
+    dependsOn: ["moveDate", "keepItems", "scope", ...DISABILITY],
+    detailKind: "generic",
+    priority: "normal",
+    daysBeforeMove: 21,
+  },
+  {
+    id: "packing.firstNight",
+    sectionId: "packing",
+    title: "First-night bag",
+    defaultSummary: "Pack one bag with everything you need for the first night and morning, so you do not have to open boxes.",
+    summarize: firstNightSummary,
+    dependsOn: ["household", "moveDate", ...DISABILITY],
+    detailKind: "packingList",
+    sprite: "suitcase",
+    priority: "high",
+    daysBeforeMove: 2,
+  },
+  {
+    id: "packing.clothes",
+    sectionId: "packing",
+    title: "Clothes for the first weeks",
+    defaultSummary: "Pack two weeks of clothes for the weather where you are going, before the rest of your things arrive.",
+    summarize: clothesSummary,
+    dependsOn: ["destination", "chosenArea", "moveDate", "dailyLife.mainTransport"],
+    detailKind: "packingList",
+    priority: "normal",
+    daysBeforeMove: 7,
+  },
+  {
+    id: "packing.carryOn",
+    sectionId: "packing",
+    title: "Carry-on for the trip to {country}",
+    defaultSummary: "Keep documents, devices, medication, valuables, and a change of clothes in the bag that stays with you.",
+    showIf: international,
+    dependsOn: ["scope", "destination", "household", "keepItems", ...DISABILITY],
+    detailKind: "packingList",
+    priority: "high",
+    daysBeforeMove: 2,
+  },
+  {
+    id: "packing.keepItems",
+    sectionId: "packing",
+    title: "Pack what you are keeping",
+    defaultSummary: "For each thing you are keeping, decide whether it ships or travels with you.",
+    showIf: (profile) => international(profile) && profile.keepItems.some((entry) => entry.trim()),
+    summarize: (profile) =>
+      `Decide what ships and what travels with you: ${profile.keepItems.filter((entry) => entry.trim()).join(", ")}. Keep fragile and valuable things with you.`,
+    dependsOn: ["keepItems", "scope", "destination"],
+    detailKind: "packingList",
+    priority: "normal",
+    daysBeforeMove: 30,
+  },
+  {
+    id: "packing.openFirst",
+    sectionId: "packing",
+    title: "Open-first box",
+    defaultSummary: "Label one box Open First with cleaning supplies, tools, a few dishes, and anything you need on day one.",
+    dependsOn: ["household"],
+    detailKind: "packingList",
+    sprite: "box",
+    priority: "normal",
+    daysBeforeMove: 3,
+  },
+  {
+    id: "packing.kids",
+    sectionId: "packing",
+    title: "A bag for the kids",
+    defaultSummary: "Pack comfort items, snacks, and things to do for each child, plus copies of their records.",
+    showIf: hasKids,
+    summarize: (profile) =>
+      `Pack a travel bag for children aged ${profile.household.kids.map((kid) => kid.age).join(", ")}: comfort items, snacks, something to do, and copies of school and medical records.`,
+    dependsOn: ["household.kids", "scope"],
+    detailKind: "packingList",
+    priority: "normal",
+    daysBeforeMove: 3,
+  },
+  {
+    id: "packing.pets",
+    sectionId: "packing",
+    title: "Pet travel kit",
+    defaultSummary: "Pack food, bowls, a carrier, records, and something familiar for each pet.",
+    showIf: hasPets,
+    summarize: (profile) => {
+      const pets = profile.household.pets
+        .filter((pet) => pet.count > 0)
+        .map((pet) => `${pet.count} ${pet.kind}${pet.count > 1 ? "s" : ""}`)
+        .join(", ");
+      return `Pack a travel kit for ${pets}: carrier, food, bowls, vet records, and something that smells like home.`;
+    },
+    dependsOn: ["household.pets", "scope"],
+    detailKind: "packingList",
+    sprite: "paw",
+    priority: "normal",
+    daysBeforeMove: 3,
+  },
+  {
+    id: "packing.medical",
+    sectionId: "packing",
+    title: "Medication and equipment",
+    defaultSummary: "Keep medication, prescriptions, and the equipment you use every day with you, not in a moving box.",
+    showIf: hasDisabilities,
+    dependsOn: ["household.disabilities", "household.disabilityNotes", "scope"],
+    detailKind: "packingList",
+    sprite: "bandage",
+    priority: "high",
+    daysBeforeMove: 3,
+  },
+  {
+    id: "packing.hobbies",
+    sectionId: "packing",
+    title: "Gear for your hobbies",
+    defaultSummary: "Decide which hobby gear to bring and what to buy after you arrive.",
+    showIf: (profile) => hobbyInterests(profile).length > 0,
+    summarize: (profile) => `Decide what to bring for ${hobbyInterests(profile).join(", ")}, and what is easier to buy after you arrive.`,
+    dependsOn: ["dailyLife.amenities", "dailyLife.recreation", "scope", "destination"],
+    detailKind: "packingList",
+    priority: "normal",
+    daysBeforeMove: 14,
+  },
+  {
+    id: "packing.vehicle",
+    sectionId: "packing",
+    title: "Pack for the drive",
+    defaultSummary: "Get the car or bike ready for the move.",
+    showIf: (profile) => packingVehicle(profile) !== null,
+    summarize: (profile) =>
+      packingVehicle(profile) === "car"
+        ? "Pack the car with an emergency kit, papers, chargers, and offline maps for the drive."
+        : "Pack the bike in a box or on a rack, with the tools to take it apart and put it back together.",
+    dependsOn: ["dailyLife.transport", "keepItems", "scope"],
+    detailKind: "packingList",
+    priority: "normal",
+    daysBeforeMove: 7,
   },
   {
     id: "housing.fitCheck",
@@ -762,6 +913,11 @@ export function dependsOnFor(taskId: string): readonly string[] {
 
 export function titleFor(entry: TemplateEntry, profile: Profile): string {
   if (entry.id === "moveIn.transport") return transportTitle(profile);
+  if (entry.id === "packing.clothes") {
+    const month = moveMonth(profile);
+    return month ? `Clothes for ${month} in ${focusPlace(profile).label.split(",")[0]}` : entry.title;
+  }
+  if (entry.id === "packing.vehicle") return packingVehicle(profile) === "car" ? "Car kit for the drive" : "Pack up your bike";
   return entry.title.replaceAll("{country}", destinationCountry(profile));
 }
 

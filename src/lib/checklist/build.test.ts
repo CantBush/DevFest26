@@ -24,7 +24,7 @@ describe("buildChecklist", () => {
 
   it("hides visa and household for the domestic solo profile", () => {
     const checklist = buildChecklist(sampleDomesticProfile, NOW);
-    expect(checklist.sections.map((section) => section.id)).toEqual(["moveOut", "housing", "paperwork", "health", "moveIn"]);
+    expect(checklist.sections.map((section) => section.id)).toEqual(["moveOut", "packing", "housing", "paperwork", "health", "moveIn"]);
     expect(ids(sampleDomesticProfile)).not.toContain("visa.permit");
     expect(ids(sampleDomesticProfile)).not.toContain("household.pets");
   });

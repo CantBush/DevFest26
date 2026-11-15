@@ -1,7 +1,8 @@
 import { z } from "zod";
-import type { DetailBlock, FactPack, PlaceInfo, Profile, Task, TaskDetail } from "@/lib/types";
+import { SECTION_ORDER, type DetailBlock, type FactPack, type PlaceInfo, type Profile, type Task, type TaskDetail } from "@/lib/types";
 import { buildChecklist } from "@/lib/checklist/build";
 import { hashInputs } from "@/lib/checklist/hash";
+import { itemId, packingItemsFor, type PackingItem } from "@/lib/checklist/packing";
 import { focusPlace, hasDisabilities } from "@/lib/checklist/profile";
 import { dependsOnFor, templateById } from "@/lib/checklist/template";
 import { generateJson } from "@/lib/gemini/client";
@@ -41,6 +42,11 @@ const FitSchema = z.object({
 
 const NeighborhoodDraftSchema = z.object({
   neighborhoods: z.array(z.object({ name: z.string(), why: z.string(), estRent: z.string().optional() })).min(1).max(5),
+});
+
+const PackingExtrasSchema = z.object({
+  intro: z.string(),
+  items: z.array(z.object({ name: z.string(), note: z.string().optional() })).max(6),
 });
 
 const RankSchema = z.object({
@@ -89,7 +95,7 @@ function resolveTask(input: TaskDetailInput): Task {
   }
   if (!input.taskId.startsWith("ai.")) throw new UnknownTaskError(input.taskId);
   const sectionId = input.taskId.split(".")[1];
-  const section = ["visa", "moveOut", "housing", "paperwork", "health", "household", "moveIn"].find((id) => id === sectionId) ?? "moveIn";
+  const section = SECTION_ORDER.find((id) => id === sectionId) ?? "moveIn";
   return {
     id: input.taskId,
     sectionId: section as Task["sectionId"],
@@ -146,6 +152,43 @@ async function genericDetail(task: Task, profile: Profile, factPack: FactPack | 
   } catch {
     return finish(task, profile, fallbackBlocks(task), {}, now, factPack?.sources);
   }
+}
+
+async function packingDetail(task: Task, profile: Profile, services: Services, now: Date, useModel: boolean): Promise<TaskDetail> {
+  const base = packingItemsFor(task.id, profile);
+  let intro = task.summary;
+  let extras: PackingItem[] = [];
+  if (useModel) {
+    try {
+      const suggested = await ask(
+        services,
+        PackingExtrasSchema,
+        SYSTEM_GUARDRAILS,
+        `Task: ${task.title}\nSummary: ${task.summary}\nProfile: ${profileBrief(profile)}\nItems already on the list: ${JSON.stringify(base.map((entry) => entry.name))}\nWrite a one or two sentence intro, then suggest up to 6 more items for this list only. Tailor them to the usual weather at the destination in the move month, local customs, and this household. Do not repeat listed items, name brands or stores, or add URLs.`,
+      );
+      intro = stripUrls(suggested.intro) || intro;
+      const taken = new Set(base.map((entry) => entry.id));
+      extras = suggested.items.flatMap((entry) => {
+        const name = stripUrls(entry.name);
+        const id = itemId(name);
+        if (!name || taken.has(id)) return [];
+        taken.add(id);
+        const note = entry.note ? stripUrls(entry.note) : "";
+        return [{ id, name, ...(note ? { note } : {}), suggested: true }];
+      });
+    } catch {
+      // Keep the quiz-based list.
+    }
+  }
+  const items = [...base, ...extras];
+  const blocks: DetailBlock[] = [
+    { type: "heading", level: 1, text: stripUrls(task.title) || task.title },
+    { type: "text", text: intro },
+  ];
+  if (items.length > 0) blocks.push({ type: "packingItems", items });
+  else blocks.push({ type: "text", text: "Nothing to add here from your quiz answers yet. Edit them in Settings to update this list." });
+  if (extras.length > 0) blocks.push({ type: "callout", tone: "info", text: "Items marked Suggested are AI ideas for your destination. Skip any that do not fit." });
+  return finish(task, profile, blocks, {}, now);
 }
 
 function factText(taskId: string, pack: FactPack): string {
@@ -454,6 +497,7 @@ export async function createTaskDetail(input: TaskDetailInput): Promise<TaskDeta
   if (saved) return saved;
   const task = resolveTask(input);
   const services = { ...liveServices, ...input.services };
+  if (task.detailKind === "packingList") return packingDetail(task, input.profile, services, now, !demoFixturesEnabled());
   if (demoFixturesEnabled()) return finish(task, input.profile, fallbackBlocks(task), {}, now, input.factPack?.sources);
 
   switch (task.detailKind) {

@@ -30,6 +30,7 @@ async function defaultPersonalize(profile: Profile, checklist: Checklist, factPa
       factPack ? `Fact pack (use this for country rules, do not add links): ${JSON.stringify(factPack)}` : "No fact pack.",
       `Template tasks: ${JSON.stringify(tasks)}`,
       "Write a short summary, an optional YYYY-MM-DD due date, and a priority for each template id you want to personalize.",
+      "For packing tasks, mention the usual weather at the destination in the move month when it changes what to pack.",
       "extraTasks is optional. Use it only for a step the template missed. Leave it empty when the template is enough.",
     ].join("\n\n"),
   );

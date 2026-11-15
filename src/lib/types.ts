@@ -79,6 +79,7 @@ export type Profile = z.infer<typeof ProfileSchema>;
 export const SectionIdSchema = z.enum([
   "visa",
   "moveOut",
+  "packing",
   "housing",
   "paperwork",
   "health",
@@ -96,6 +97,7 @@ export const DetailKindSchema = z.enum([
   "commute",
   "fitCheck",
   "areaSearch",
+  "packingList",
 ]);
 export type DetailKind = z.infer<typeof DetailKindSchema>;
 
@@ -107,6 +109,7 @@ export const SpriteIdSchema = z.enum([
   "bandage",
   "paw",
   "food",
+  "suitcase",
 ]);
 export type SpriteId = z.infer<typeof SpriteIdSchema>;
 
@@ -191,6 +194,17 @@ export const DetailBlockSchema = z.discriminatedUnion("type", [
     ),
   }),
   z.object({ type: z.literal("passportCheck"), minMonthsAfterEntry: z.number().int() }),
+  z.object({
+    type: z.literal("packingItems"),
+    items: z.array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        note: z.string().optional(),
+        suggested: z.boolean().optional(), // added by Gemini on top of the quiz-based list
+      }),
+    ),
+  }),
   z.object({
     type: z.literal("links"),
     items: z.array(z.object({ label: z.string(), url: z.string() })),
