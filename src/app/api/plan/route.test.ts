@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { sampleDomesticProfile } from "@/lib/fixtures";
+import { sampleDomesticProfile, sampleInternationalProfile } from "@/lib/fixtures";
 
 vi.mock("@/lib/firebase/admin", () => {
   class AuthError extends Error {
@@ -36,6 +36,8 @@ const factPackMock = vi.mocked(loadReusableFactPack);
 const cacheMock = vi.mocked(cachePlan);
 const createPlanMock = vi.mocked(createPlan);
 
+const quizProfile = { ...sampleDomesticProfile, moveDate: "2027-09-01" };
+
 function request(body: unknown, token = "token"): Request {
   return new Request("http://localhost/api/plan", {
     method: "POST",
@@ -66,7 +68,7 @@ describe("POST /api/plan", () => {
   it("returns the template without Gemini when the regeneration cap is hit", async () => {
     requireUidMock.mockResolvedValue("user-1");
     capMock.mockResolvedValue("capped");
-    const response = await POST(request({ profile: { ...sampleDomesticProfile, version: 4 } }));
+    const response = await POST(request({ profile: { ...quizProfile, version: 4 } }));
     expect(response.status).toBe(200);
     expect(response.headers.get("X-Plan-Source")).toBe("cap");
     const body = (await response.json()) as { sections: { id: string }[] };
@@ -83,9 +85,20 @@ describe("POST /api/plan", () => {
       generatedAt: "2026-11-14T12:00:00.000Z",
       sections: [],
     });
-    const response = await POST(request({ profile: sampleDomesticProfile }));
+    const response = await POST(request({ profile: quizProfile }));
     expect(response.status).toBe(200);
-    expect(createPlanMock).toHaveBeenCalledWith(sampleDomesticProfile, { previousFactPack: undefined });
+    expect(createPlanMock).toHaveBeenCalledWith(quizProfile, { previousFactPack: undefined });
     expect(cacheMock).toHaveBeenCalledOnce();
+  });
+
+  it("returns the saved plan for a demo account without Gemini", async () => {
+    requireUidMock.mockResolvedValue("user-1");
+    const response = await POST(request({ profile: sampleInternationalProfile }));
+    expect(response.status).toBe(200);
+    expect(response.headers.get("X-Plan-Source")).toBe("demo");
+    const body = (await response.json()) as { sections: { id: string }[] };
+    expect(body.sections.some((section) => section.id === "visa")).toBe(true);
+    expect(createPlanMock).not.toHaveBeenCalled();
+    expect(capMock).not.toHaveBeenCalled();
   });
 });
