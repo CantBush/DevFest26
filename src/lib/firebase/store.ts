@@ -1,12 +1,12 @@
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import type { Checklist, FactPack, Profile, TaskDetail } from "@/lib/types";
 import { FactPackSchema, TaskDetailSchema } from "@/lib/types";
-import { LOCAL_DEV_UID, adminApp } from "@/lib/firebase/admin";
+import { LOCAL_DEV_UID, adminApp, canUseAdminFirestore } from "@/lib/firebase/admin";
 import { checklistFromDoc, profileFromUserDoc, withoutUndefined } from "@/lib/firebase/docs";
 import { nextRegenerationCount } from "@/lib/firebase/regen-cap";
 
 function database(uid: string): Firestore | null {
-  if (uid === LOCAL_DEV_UID) return null;
+  if (uid === LOCAL_DEV_UID || !canUseAdminFirestore()) return null;
   try {
     return getFirestore(adminApp());
   } catch (error) {

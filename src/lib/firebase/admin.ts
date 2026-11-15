@@ -1,3 +1,6 @@
+import { existsSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import { applicationDefault, cert, getApps, initializeApp, type App } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 
@@ -21,6 +24,21 @@ function serviceAccount(): App {
     });
   }
   return initializeApp({ credential: applicationDefault(), projectId });
+}
+
+function hasGcloudLogin(): boolean {
+  const configDir = process.env.APPDATA ? join(process.env.APPDATA, "gcloud") : join(homedir(), ".config", "gcloud");
+  return existsSync(join(configDir, "application_default_credentials.json"));
+}
+
+// Verifying ID tokens only needs the project ID, but Firestore needs real credentials.
+// Without them every Firestore call retries for a long time before failing, so local
+// dev skips server-side storage unless a service account or gcloud login is present.
+export function canUseAdminFirestore(): boolean {
+  if (process.env.NODE_ENV === "production") return true;
+  return Boolean(
+    process.env.FIREBASE_SERVICE_ACCOUNT_JSON || process.env.GOOGLE_APPLICATION_CREDENTIALS || hasGcloudLogin(),
+  );
 }
 
 export function adminApp(): App {
