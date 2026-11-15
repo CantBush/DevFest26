@@ -74,14 +74,16 @@ flowchart LR
 
 Build against the fixtures first; swap in real data in Phase 2.
 
-- [ ] **A1. App shell.** Phone-width layout (`max-w-md`, centered), top back button, bottom-center Home button, settings gear, empty routes for every screen (section 12).
-- [ ] **A2. Onboarding quiz.** Declarative question config in `src/lib/quiz/questions.ts` (section 6), one question per screen, 4-part progress bar, Back/Next/Skip, Places autocomplete input, pin editor (max 5), chips, sliders, budget input with rent/buy label switch. Saves answers after every step (through Person B's `saveProfile`, or local state until it exists). "Build my checklist" leads to the loading screen.
-- [ ] **A3. Home.** Section rows with sprite, checkbox, and progress ("3/7"); done tasks struck through; "Important!" bookmark row pinned at the bottom; settings gear bottom-right.
-- [ ] **A4. Section page.** Back button, bookmark toggle, task rows with checkboxes, collapsible Rent or Buy sublist with a triangle toggle, Home button.
-- [ ] **A5. Task detail page.** Renderer for every `DetailBlock` type, location line with a place search field, map card, bookmark toggle, back and Home buttons.
-- [ ] **A6. Important page.** List of bookmarked section and task pages; tapping opens the page.
-- [ ] **A7. Settings page.** Lists the four quiz sections with a summary of answers; tapping a section reopens the same quiz components in edit mode; Save calls `regeneratePlan` (Person B). Also: link Google account, start over.
-- [ ] **A8. Sprites, loading animation, polish.** Mascot per section, two-frame loading animation, empty and error states, tap targets, contrast.
+Status: A1–A8 are built on fixtures. All data flows through `src/components/state/AppState.tsx` (localStorage plus fixture responses with fake delays); Phase 2 (I1, I3) replaces those functions with Person B's `db.ts` and `/api` calls. Sprites in `public/sprites/` are placeholders; drop in final art with the same file names.
+
+- [x] **A1. App shell.** Phone-width layout (`max-w-md`, centered), top back button, bottom-center Home button, settings gear, empty routes for every screen (section 12).
+- [x] **A2. Onboarding quiz.** Declarative question config in `src/lib/quiz/questions.ts` (section 6), one question per screen, 4-part progress bar, Back/Next/Skip, Places autocomplete input, pin editor (max 5), chips, sliders, budget input with rent/buy label switch. Saves answers after every step (through Person B's `saveProfile`, or local state until it exists). "Build my checklist" leads to the loading screen.
+- [x] **A3. Home.** Section rows with sprite, checkbox, and progress ("3/7"); done tasks struck through; "Important!" bookmark row pinned at the bottom; settings gear bottom-right.
+- [x] **A4. Section page.** Back button, bookmark toggle, task rows with checkboxes, collapsible Rent or Buy sublist with a triangle toggle, Home button.
+- [x] **A5. Task detail page.** Renderer for every `DetailBlock` type, location line with a place search field, map card, bookmark toggle, back and Home buttons.
+- [x] **A6. Important page.** List of bookmarked section and task pages; tapping opens the page.
+- [x] **A7. Settings page.** Lists the four quiz sections with a summary of answers; tapping a section reopens the same quiz components in edit mode; Save calls `regeneratePlan` (Person B). Also: link Google account, start over.
+- [x] **A8. Sprites, loading animation, polish.** Mascot per section, two-frame loading animation, empty and error states, tap targets, contrast.
 
 ### 3.3 Person B: backend (data and AI)
 
