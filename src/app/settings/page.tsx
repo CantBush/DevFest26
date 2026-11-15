@@ -136,7 +136,7 @@ function SectionEditor({
   };
 
   return (
-    <AppShell title={`Edit: ${title}`} showHome={false}>
+    <AppShell title={`Edit: ${title}`} showHome={false} showSettings={false}>
       <div className="flex flex-col gap-10">
         {questions.map((q) => (
           <QuestionView

@@ -27,12 +27,14 @@ export const BackIcon = (p: IconProps) => (
   </Icon>
 );
 
-export const HomeIcon = (p: IconProps) => (
-  <Icon {...p}>
-    <path d="M4 11 12 4l8 7" />
-    <path d="M6 10v9h12v-9" />
-    <path d="M10 19v-5h4v5" />
-  </Icon>
+// Mini version of the board and clip, drawn like the sprites: flat fills, ink outline.
+export const ClipboardIcon = ({ size = 30 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="5" y="5" width="22" height="25" rx="2.5" fill="#c99a6e" stroke="#1f1c19" strokeWidth="2" />
+    <rect x="8" y="9" width="16" height="18.5" rx="1" fill="#fff" stroke="#1f1c19" strokeWidth="1.6" />
+    <path d="M11 2.5 H21 L22.5 9 H9.5 Z" fill="#d6d6d2" stroke="#1f1c19" strokeWidth="2" />
+    <path d="M11 14.5 l1.6 1.6 l3 -3.3 M18 15 h3.5 M11 21.5 h2.6 M18 21.5 h3.5" stroke="#1f1c19" strokeWidth="1.6" />
+  </svg>
 );
 
 export const GearIcon = (p: IconProps) => (
