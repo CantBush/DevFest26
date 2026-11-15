@@ -60,14 +60,15 @@ flowchart LR
 ### 3.1 Phase 0: together, on one computer
 
 - [ ] Human setup from section 2 is done.
-- [ ] Scaffold: `npx create-next-app@latest` (TypeScript, Tailwind, App Router, `src/` directory, ESLint).
-- [ ] Install: `firebase`, `firebase-admin`, `@google/genai`, `zod`, `@vis.gl/react-google-maps`, and `vitest` (dev).
-- [ ] `src/lib/types.ts`: zod schemas and types for `Profile`, `Checklist`, `Task`, `TaskDetail`, `DetailBlock`, `FactPack` (section 11).
-- [ ] `src/lib/fixtures/`: `profile.international.json`, `profile.domestic.json`, `checklist.sample.json`, `taskDetail.areaSearch.json`, `taskDetail.generic.json`. These fake responses let Person A build every screen before the backend exists.
-- [ ] `src/lib/firebase/client.ts`: Firebase init plus anonymous sign-in.
-- [ ] `.env.example` (section 13), `firestore.rules` (section 11), `apphosting.yaml`.
-- [ ] `AGENTS.md`: tells every agent to read this plan, respect file ownership (section 3.4), and run `npm run lint` and `npm run build` before finishing.
-- [ ] Push to `main`. Both people pull it and branch from it.
+- [x] Scaffold with `create-next-app` (Next.js 16.4: TypeScript, Tailwind, App Router, `src/` directory, ESLint, Cache Components on).
+- [x] Install: `firebase`, `firebase-admin`, `@google/genai`, `zod`, `@vis.gl/react-google-maps`, and `vitest` (dev).
+- [x] `src/lib/types.ts`: zod schemas and types for `Profile`, `Checklist`, `Task`, `TaskDetail`, `DetailBlock`, `FactPack`, `Bookmark`, `TaskTemplate`, and the four API request and response shapes (section 11).
+- [x] `src/lib/fixtures/`: `profile.international.json`, `profile.domestic.json`, `checklist.sample.json`, `taskDetail.areaSearch.json`, `taskDetail.generic.json`, exported already validated from `@/lib/fixtures`. A test fails if a fixture drifts from the types.
+- [x] `src/lib/firebase/client.ts`: lazy Firebase init, `ensureSignedIn()` (anonymous sign-in), `getIdToken()` for API calls.
+- [x] `.env.example` (section 13), `firestore.rules` and `firebase.json` (section 11), `apphosting.yaml` (fill in the `REPLACE_ME` values).
+- [x] `AGENTS.md`: tells every agent to read this plan, respect file ownership (section 3.4), and run the checks before finishing.
+- [x] Scripts: `npm run dev`, `lint`, `typecheck`, `test`, `build`.
+- [x] Push to `main`. Both people pull it and branch from it.
 
 ### 3.2 Person A: frontend (screens and design)
 
@@ -477,6 +478,8 @@ Settings also has: link a Google account (keeps the plan across devices), and st
 
 ## 11. Data model
 
+The source of truth is [src/lib/types.ts](src/lib/types.ts) (zod schemas with inferred types). The summary below is for reading; if they disagree, the code wins.
+
 ```ts
 type PlaceRef = { placeId?: string; label: string; lat: number; lng: number; countryCode: string };
 type TransportMode = "car" | "transit" | "bike" | "walk";
@@ -540,13 +543,15 @@ type Task = {
   dueBy?: string;
   priority: "high" | "normal";
   sublist?: "rent" | "buy";
+  detailKind: DetailKind;
+  sprite?: string;
   source: "template" | "ai";
 };
 
 type Checklist = {
   profileVersion: number;
   generatedAt: string;
-  sections: { id: SectionId; title: string; sprite: string; tasks: Task[] }[];
+  sections: { id: SectionId; title: string; sprite: string; pinned?: boolean; tasks: Task[] }[];
   factPack?: FactPack;
 };
 
