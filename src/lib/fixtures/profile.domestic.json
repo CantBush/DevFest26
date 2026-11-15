@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "scope": "domestic",
+  "origin": { "label": "Chicago, IL, USA", "lat": 41.8781, "lng": -87.6298, "countryCode": "US" },
+  "moveDate": "2027-08-15",
+  "currentHome": "rent",
+  "destination": {
+    "mode": "area",
+    "place": { "label": "Austin, TX, USA", "lat": 30.2672, "lng": -97.7431, "countryCode": "US" }
+  },
+  "pins": [
+    {
+      "id": "pin-campus",
+      "kind": "campus",
+      "label": "UT Austin campus",
+      "place": { "label": "University of Texas at Austin", "lat": 30.2849, "lng": -97.7341, "countryCode": "US" },
+      "maxCommuteMin": 25
+    }
+  ],
+  "household": {
+    "people": 1,
+    "kids": [],
+    "pets": [],
+    "disabilities": [],
+    "specialNeeds": [],
+    "stayingBehind": []
+  },
+  "keepItems": [],
+  "money": {
+    "currency": "USD",
+    "moveBudget": 2500,
+    "housingIntent": "rent",
+    "housingBudget": 1100,
+    "regulatedJob": false
+  },
+  "dailyLife": {
+    "transport": ["bike", "walk"],
+    "mainTransport": "bike",
+    "culture": [],
+    "amenities": ["board game cafe"],
+    "recreation": ["climbing"]
+  }
+}

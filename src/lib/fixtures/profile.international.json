@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "scope": "international",
+  "origin": { "label": "Seattle, WA, USA", "lat": 47.6062, "lng": -122.3321, "countryCode": "US" },
+  "moveDate": "2027-03-01",
+  "currentHome": "rent",
+  "destination": {
+    "mode": "area",
+    "place": { "label": "Seoul, South Korea", "lat": 37.5665, "lng": 126.978, "countryCode": "KR" }
+  },
+  "pins": [
+    {
+      "id": "pin-job",
+      "kind": "job",
+      "label": "New office (Gangnam)",
+      "place": { "label": "Gangnam Station, Seoul", "lat": 37.4979, "lng": 127.0276, "countryCode": "KR" },
+      "maxCommuteMin": 40
+    }
+  ],
+  "household": {
+    "people": 1,
+    "kids": [],
+    "pets": [{ "kind": "cat", "count": 1 }],
+    "disabilities": [],
+    "specialNeeds": [],
+    "stayingBehind": ["Parents in Seattle"]
+  },
+  "keepItems": ["clothes", "electronics", "sentimental items"],
+  "money": {
+    "currency": "USD",
+    "moveBudget": 8000,
+    "housingIntent": "rent",
+    "housingBudget": 1400,
+    "regulatedJob": false
+  },
+  "dailyLife": {
+    "transport": ["transit", "walk"],
+    "mainTransport": "transit",
+    "culture": ["pho"],
+    "amenities": ["Limbus Company"],
+    "recreation": ["taekwondo"]
+  }
+}

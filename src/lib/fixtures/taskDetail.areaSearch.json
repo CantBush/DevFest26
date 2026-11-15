@@ -1,0 +1,39 @@
+{
+  "taskId": "housing.areaSearch",
+  "location": { "label": "Seoul, South Korea", "lat": 37.5665, "lng": 126.978 },
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Areas that fit your move" },
+    { "type": "text", "text": "Sample content for UI development. These picks balance your $1,400 monthly budget, a transit commute under 40 minutes to Gangnam, and your interests." },
+    {
+      "type": "neighborhoods",
+      "items": [
+        { "name": "Example Area A", "why": "Direct subway line to Gangnam and several taekwondo gyms nearby.", "estRent": "About $900-1,200/month (AI estimate)", "placeId": "sample-area-a" },
+        { "name": "Example Area B", "why": "Lively area with cafes and a gaming community; one transfer to Gangnam.", "estRent": "About $1,000-1,400/month (AI estimate)", "placeId": "sample-area-b" },
+        { "name": "Example Area C", "why": "Quiet and green, close to a large park; longest commute of the three.", "estRent": "About $800-1,100/month (AI estimate)", "placeId": "sample-area-c" }
+      ]
+    },
+    {
+      "type": "commute",
+      "originLabel": "Example Area A",
+      "rows": [{ "pinId": "pin-job", "minutes": 28, "withinLimit": true }]
+    },
+    { "type": "heading", "level": 2, "text": "Near Example Area A" },
+    { "type": "places", "title": "Matches your interests", "placeIds": ["sample-place-pho", "sample-place-taekwondo"] },
+    { "type": "callout", "tone": "info", "text": "Rent ranges are AI estimates. Check current listings before deciding." },
+    {
+      "type": "links",
+      "items": [
+        { "label": "Apartments near Example Area A (Google Maps)", "url": "https://www.google.com/maps/search/?api=1&query=apartments%20Seoul" }
+      ]
+    }
+  ],
+  "places": {
+    "sample-area-a": { "name": "Example Area A", "address": "Seoul, South Korea", "lat": 37.5446, "lng": 127.0557, "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Seoul" },
+    "sample-area-b": { "name": "Example Area B", "address": "Seoul, South Korea", "lat": 37.5563, "lng": 126.9236, "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Seoul" },
+    "sample-area-c": { "name": "Example Area C", "address": "Seoul, South Korea", "lat": 37.5133, "lng": 127.1001, "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Seoul" },
+    "sample-place-pho": { "name": "Example Pho Restaurant", "address": "Example Area A, Seoul", "lat": 37.5451, "lng": 127.0562, "rating": 4.5, "mapsUrl": "https://www.google.com/maps/search/?api=1&query=pho%20Seoul", "accessibility": { "entrance": true } },
+    "sample-place-taekwondo": { "name": "Example Taekwondo Gym", "address": "Example Area A, Seoul", "lat": 37.5439, "lng": 127.0549, "rating": 4.8, "mapsUrl": "https://www.google.com/maps/search/?api=1&query=taekwondo%20Seoul" }
+  },
+  "inputsHash": "sample",
+  "generatedAt": "2026-11-14T12:00:00.000Z"
+}

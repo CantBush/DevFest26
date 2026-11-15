@@ -1,0 +1,113 @@
+{
+  "profileVersion": 1,
+  "generatedAt": "2026-11-14T12:00:00.000Z",
+  "sections": [
+    {
+      "id": "visa",
+      "title": "Visa and entry",
+      "sprite": "airplane",
+      "pinned": true,
+      "tasks": [
+        { "id": "visa.permit", "sectionId": "visa", "title": "Get the right visa or permit, and note its renewal rules", "summary": "Your employer usually sponsors a work visa for Korea. Confirm which category applies and when it must be renewed.", "dueBy": "2026-12-15", "priority": "high", "detailKind": "factPack", "source": "template" },
+        { "id": "visa.passport", "sectionId": "visa", "title": "Check passport validity for South Korea", "summary": "Make sure your passport stays valid well past your entry date so the visa can be issued for the full term.", "dueBy": "2026-12-01", "priority": "high", "detailKind": "factPack", "source": "template" },
+        { "id": "visa.apostilles", "sectionId": "visa", "title": "Get apostilles for birth, marriage, and diploma records", "summary": "Your diploma will likely need an apostille for the work visa. Order it early; it can take weeks.", "dueBy": "2026-12-15", "priority": "high", "detailKind": "factPack", "source": "template" },
+        { "id": "visa.driving", "sectionId": "visa", "title": "Driving: local license, international driving permit, or both", "summary": "You plan to use transit, so this is optional. An international driving permit keeps the option open for your first year.", "dueBy": "2027-02-01", "priority": "normal", "detailKind": "factPack", "source": "template" }
+      ]
+    },
+    {
+      "id": "moveOut",
+      "title": "Moving out",
+      "sprite": "box",
+      "tasks": [
+        { "id": "moveOut.notice", "sectionId": "moveOut", "title": "Give notice to your landlord", "summary": "Check your lease for the notice period (often 30 to 60 days) and send written notice.", "dueBy": "2026-12-30", "priority": "high", "detailKind": "generic", "source": "template" },
+        { "id": "moveOut.walkthrough", "sectionId": "moveOut", "title": "Schedule the move-out walkthrough", "summary": "Book it for after the movers leave and take photos of every room.", "dueBy": "2027-02-20", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "moveOut.deposit", "sectionId": "moveOut", "title": "Get your deposit back", "summary": "Give your landlord a forwarding address and a way to pay you while you are abroad.", "dueBy": "2027-02-28", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "moveOut.keys", "sectionId": "moveOut", "title": "Hand over keys", "summary": "Return every key and fob and get a written receipt.", "dueBy": "2027-02-28", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "moveOut.packing", "sectionId": "moveOut", "title": "Packing plan", "summary": "Split items into ship, carry, sell, and donate. You are keeping clothes, electronics, and sentimental items.", "dueBy": "2027-01-15", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "moveOut.moveDay", "sectionId": "moveOut", "title": "Move day plan", "summary": "Plan the day around your flight, the movers' pickup, and your cat's travel crate.", "dueBy": "2027-02-25", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "moveOut.mover", "sectionId": "moveOut", "title": "Hire a licensed international mover and compare quotes", "summary": "Get at least three quotes for a small shipment from Seattle to Seoul.", "dueBy": "2026-12-15", "priority": "high", "detailKind": "generic", "source": "template" },
+        { "id": "moveOut.transitInsurance", "sectionId": "moveOut", "title": "Get transit insurance for shipped items", "summary": "Insure your electronics and sentimental items for their replacement value.", "dueBy": "2027-01-10", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "moveOut.freight", "sectionId": "moveOut", "title": "Choose sea or air freight in time", "summary": "Sea freight takes about 3 to 4 months, so it would need to leave by early December. Air freight (about a month) fits your timeline better.", "dueBy": "2026-12-01", "priority": "high", "detailKind": "generic", "source": "template" },
+        { "id": "moveOut.mail", "sectionId": "moveOut", "title": "Have someone or a virtual mailbox service hold physical mail", "summary": "Your parents in Seattle could receive mail, or use a virtual mailbox service.", "dueBy": "2027-02-01", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "moveOut.phone", "sectionId": "moveOut", "title": "Keep your home number alive for bank texts and get a local eSIM", "summary": "Move your US number to a low-cost plan for 2FA codes, and use an eSIM for data in Korea.", "dueBy": "2027-02-15", "priority": "normal", "detailKind": "generic", "source": "template" }
+      ]
+    },
+    {
+      "id": "housing",
+      "title": "Housing",
+      "sprite": "umbrella",
+      "tasks": [
+        { "id": "housing.areaSearch", "sectionId": "housing", "title": "Choose a location", "summary": "Compare Seoul neighborhoods within 40 minutes of Gangnam by transit and within your $1,400 monthly budget.", "dueBy": "2027-01-15", "priority": "high", "detailKind": "areaSearch", "sprite": "umbrella", "source": "template" },
+        { "id": "housing.commute", "sectionId": "housing", "title": "Check the commute to your pins", "summary": "See transit times from each candidate area to your Gangnam office.", "dueBy": "2027-01-15", "priority": "high", "detailKind": "commute", "source": "template" },
+        { "id": "housing.rent.application", "sectionId": "housing", "title": "Apply", "summary": "Have your passport, visa, and employment letter ready when you apply.", "dueBy": "2027-02-01", "priority": "normal", "sublist": "rent", "detailKind": "generic", "source": "template" },
+        { "id": "housing.rent.lease", "sectionId": "housing", "title": "Review and sign the lease", "summary": "Check the deposit amount, monthly rent, maintenance fees, and the contract length before you sign.", "dueBy": "2027-02-10", "priority": "high", "sublist": "rent", "detailKind": "generic", "source": "template" },
+        { "id": "housing.rent.deposit", "sectionId": "housing", "title": "Pay the deposit and get a receipt", "summary": "Deposits in Seoul can be large. Pay by traceable transfer and keep the receipt.", "dueBy": "2027-02-10", "priority": "normal", "sublist": "rent", "detailKind": "generic", "source": "template" },
+        { "id": "housing.rent.utilities", "sectionId": "housing", "title": "Set up utilities and internet", "summary": "Ask the landlord which utilities are included and book internet installation for your first week.", "dueBy": "2027-03-05", "priority": "normal", "sublist": "rent", "detailKind": "generic", "source": "template" }
+      ]
+    },
+    {
+      "id": "paperwork",
+      "title": "Paperwork",
+      "sprite": "papers",
+      "tasks": [
+        { "id": "paperwork.address", "sectionId": "paperwork", "title": "Change your address", "summary": "Update your address with banks, your employer, and government accounts.", "dueBy": "2027-02-20", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "paperwork.id", "sectionId": "paperwork", "title": "Update your ID", "summary": "Keep your US ID valid; you will get a local residence card after arrival.", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "paperwork.insurance", "sectionId": "paperwork", "title": "Proof of insurance", "summary": "Get renters insurance for your new place and cancel the old policy after move-out.", "dueBy": "2027-03-01", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "paperwork.banks", "sectionId": "paperwork", "title": "Banks and bills", "summary": "Cancel or transfer utilities and subscriptions, and plan how you will move money to Korea.", "dueBy": "2027-02-15", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "paperwork.bag", "sectionId": "paperwork", "title": "Papers in the bag", "summary": "Carry your passport, visa documents, apostilled diploma, lease, and your cat's health certificate. Don't ship them.", "dueBy": "2027-02-25", "priority": "high", "detailKind": "generic", "source": "template" },
+        { "id": "paperwork.cardsAbroad", "sectionId": "paperwork", "title": "Cards that work abroad", "summary": "Use a card with no foreign transaction fees and tell your bank about the move.", "dueBy": "2027-02-01", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "paperwork.backupCard", "sectionId": "paperwork", "title": "A backup card from a different provider", "summary": "Carry a second card on a different network in case one is blocked.", "dueBy": "2027-02-01", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "paperwork.taxes", "sectionId": "paperwork", "title": "Tax obligations in both countries", "summary": "US citizens still file US taxes while abroad. Learn what you will owe in Korea too.", "dueBy": "2027-02-15", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "paperwork.savingsBuffer", "sectionId": "paperwork", "title": "Savings buffer", "summary": "Aim for moving costs plus 3 to 6 months of expenses: about $12,000 to $16,000 based on your budget.", "dueBy": "2027-02-01", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "ai.paperwork.residenceCard", "sectionId": "paperwork", "title": "Register for your residence card after arriving", "summary": "Long-term foreign residents in Korea register for a residence card soon after arrival. Book the appointment early.", "dueBy": "2027-03-15", "priority": "high", "detailKind": "generic", "source": "ai" }
+      ]
+    },
+    {
+      "id": "health",
+      "title": "Health",
+      "sprite": "bandage",
+      "tasks": [
+        { "id": "health.clinic", "sectionId": "health", "title": "Find a clinic near your new home", "summary": "Look for an English-friendly clinic near the area you choose.", "priority": "normal", "detailKind": "placeFinder", "sprite": "bandage", "source": "template" },
+        { "id": "health.prescriptions", "sectionId": "health", "title": "Prescriptions", "summary": "Get enough of any prescriptions to cover your first months and carry the paperwork.", "dueBy": "2027-02-15", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "health.records", "sectionId": "health", "title": "Medical records", "summary": "Request digital copies of your records and vaccinations.", "dueBy": "2027-02-01", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "health.checkup", "sectionId": "health", "title": "Checkup before leaving", "summary": "Book physical, vision, and dental checkups while you still have US coverage.", "dueBy": "2027-01-31", "priority": "normal", "detailKind": "generic", "source": "template" },
+        { "id": "health.coverage", "sectionId": "health", "title": "A policy that covers care and evacuation in South Korea", "summary": "Bridge the gap until local coverage starts. Examples of providers include SafetyWing, Allianz, Cigna, and Aetna.", "dueBy": "2027-02-15", "priority": "high", "detailKind": "generic", "source": "template" }
+      ]
+    },
+    {
+      "id": "household",
+      "title": "Household",
+      "sprite": "paw",
+      "tasks": [
+        { "id": "household.pets", "sectionId": "household", "title": "Pets: vet records, travel, import rules", "summary": "Your cat needs a microchip, vaccinations, and a health certificate before flying. Start with the import rules.", "dueBy": "2026-12-15", "priority": "high", "detailKind": "generic", "sprite": "paw", "source": "template" },
+        { "id": "household.contact", "sectionId": "household", "title": "A contact rhythm for people who stayed", "summary": "Pick a weekly call time with your parents that works across the time difference.", "priority": "normal", "detailKind": "generic", "source": "template" }
+      ]
+    },
+    {
+      "id": "moveIn",
+      "title": "Moving in",
+      "sprite": "food",
+      "tasks": [
+        { "id": "moveIn.transport", "sectionId": "moveIn", "title": "Get a transit card", "summary": "Get a rechargeable transit card for the subway and buses on your first day.", "priority": "normal", "detailKind": "placeFinder", "source": "template" },
+        { "id": "moveIn.socialSpot", "sectionId": "moveIn", "title": "Find a regular social spot", "summary": "A pho place, a spot for Limbus Company fans, or a taekwondo gym near your new home.", "priority": "normal", "detailKind": "placeFinder", "source": "template" },
+        { "id": "moveIn.grocery", "sectionId": "moveIn", "title": "Find a grocery store", "summary": "Find the closest grocery store to your new home.", "priority": "normal", "detailKind": "placeFinder", "sprite": "food", "source": "template" },
+        { "id": "moveIn.pharmacy", "sectionId": "moveIn", "title": "Find a pharmacy", "summary": "Find a pharmacy near your new home.", "priority": "normal", "detailKind": "placeFinder", "sprite": "bandage", "source": "template" }
+      ]
+    }
+  ],
+  "factPack": {
+    "countryCode": "KR",
+    "visaOptions": [
+      { "name": "Employer-sponsored work visa", "forWho": "People hired by a Korean employer", "renewal": "Extended in Korea before it expires, usually tied to the employment contract" }
+    ],
+    "passportRule": { "minMonthsValidAfterEntry": 6, "notes": "Sample data for UI development only. Not verified." },
+    "apostille": { "hagueConvention": true, "documents": ["Diploma", "Birth certificate"], "notes": "Sample data for UI development only. Not verified." },
+    "drivingRule": { "answer": "both", "notes": "Sample data for UI development only. Not verified." },
+    "petImport": "Sample data for UI development only. Not verified.",
+    "sources": [
+      { "title": "Korea Visa Portal", "url": "https://www.visa.go.kr" },
+      { "title": "U.S. Department of State: South Korea", "url": "https://travel.state.gov" }
+    ],
+    "generatedAt": "2026-11-14T12:00:00.000Z"
+  }
+}

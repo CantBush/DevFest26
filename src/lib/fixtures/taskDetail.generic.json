@@ -1,0 +1,26 @@
+{
+  "taskId": "housing.rent.lease",
+  "location": { "label": "Seoul, South Korea", "lat": 37.5665, "lng": 126.978 },
+  "blocks": [
+    { "type": "heading", "level": 1, "text": "Review and sign the lease" },
+    { "type": "text", "text": "Sample content for UI development. Read the whole lease before signing, and get a translated copy if it is not in a language you read well." },
+    {
+      "type": "steps",
+      "items": [
+        "Confirm the deposit, monthly rent, and maintenance fee amounts.",
+        "Check the contract length and what happens if you leave early.",
+        "Ask who pays for repairs and which utilities are included.",
+        "Take dated photos of the unit before you move in."
+      ]
+    },
+    { "type": "heading", "level": 2, "text": "Before you sign" },
+    { "type": "callout", "tone": "warning", "text": "Never pay a deposit before you have seen the signed contract." },
+    {
+      "type": "links",
+      "items": [{ "label": "Search for lease translation help (Google Maps)", "url": "https://www.google.com/maps/search/?api=1&query=translation%20service%20Seoul" }]
+    }
+  ],
+  "places": {},
+  "inputsHash": "sample",
+  "generatedAt": "2026-11-14T12:00:00.000Z"
+}
