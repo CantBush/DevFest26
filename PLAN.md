@@ -166,6 +166,7 @@ flowchart TD
 | --- | --- |
 | Visa and entry | Mascot with an airplane ("International wheee...") |
 | Moving out | Mascot carrying a box (same as the loading animation) |
+| Packing List | Mascot with a suitcase |
 | Housing | Mascot with an umbrella (housing/shelter) |
 | Paperwork | Mascot holding papers |
 | Health | Mascot with a bandage (medical/pharmacy) |
@@ -255,13 +256,30 @@ Shown only for international moves, pinned first. The permit and the six-month p
 | `moveOut.deposit` | Get your deposit back | Currently renting | `generic` |
 | `moveOut.sellOrRent` | Sell or rent out your current home (stub) | Currently owning | `generic` |
 | `moveOut.keys` | Hand over keys | Always | `generic` |
-| `moveOut.packing` | Packing plan | Always | `generic` |
 | `moveOut.moveDay` | Move day plan | Always | `generic` |
 | `moveOut.mover` | Hire a licensed international mover and compare quotes | International | `generic` |
 | `moveOut.transitInsurance` | Get transit insurance for shipped items | International | `generic` |
 | `moveOut.freight` | Choose sea or air freight in time (sea about 3-4 months, air about 1 month) | International | `generic` |
 | `moveOut.mail` | Have someone or a virtual mailbox service hold physical mail | International | `generic` |
 | `moveOut.phone` | Keep your home number alive for bank texts and 2FA; get a local eSIM for data | International | `generic` |
+
+### 7.2a Packing List (`packing`)
+
+Each `packingList` task page is a tickable item list. `src/lib/checklist/packing.ts` builds the starting items from the quiz answers; Gemini may add up to 6 items marked "Suggested" (for example, weather at the destination in the move month). Ticking every item marks the task done. Item ticks are stored in progress as `<taskId>:<itemId>`.
+
+| ID | Task | Shown when | Detail kind |
+| --- | --- | --- | --- |
+| `packing.plan` | Packing plan (ship, carry, sell, donate) | Always | `generic` |
+| `packing.firstNight` | First-night bag, sized to the household | Always | `packingList` |
+| `packing.clothes` | Clothes for {month} in {city} | Always | `packingList` |
+| `packing.carryOn` | Carry-on for the trip to {country} (plug adapter, documents, medication) | International | `packingList` |
+| `packing.keepItems` | Pack what you are keeping (one item per quiz answer) | International and keep items listed | `packingList` |
+| `packing.openFirst` | Open-first box | Always | `packingList` |
+| `packing.kids` | A bag for the kids, by age | Kids | `packingList` |
+| `packing.pets` | Pet travel kit, by pet | Pets | `packingList` |
+| `packing.medical` | Medication and equipment, by disability | Any disability | `packingList` |
+| `packing.hobbies` | Gear for your hobbies | Hobbies or activities listed | `packingList` |
+| `packing.vehicle` | Car kit for the drive, or pack up your bike | Domestic with a car, or bikes | `packingList` |
 
 ### 7.3 Housing (`housing`)
 
@@ -354,7 +372,8 @@ When anyone moving has a disability, it shapes the whole plan, not only Househol
 | Section | What changes |
 | --- | --- |
 | Visa and entry | Fact pack notes rules for bringing medications and medical or mobility equipment |
-| Moving out | Packing and mover tasks include protecting medical or mobility equipment and arranging help on move day |
+| Moving out | Mover tasks include protecting medical or mobility equipment and arranging help on move day |
+| Packing List | `packing.medical` lists medication, prescriptions, and equipment for each disability; the first-night bag includes daily medication and chargers |
 | Housing | Fit check and area search weigh step-free access, elevators, ground-floor units, and nearby accessible transit; rent tasks mention requesting reasonable modifications |
 | Paperwork | `paperwork.disability`: accessible parking permit, benefits, school or work accommodations |
 | Health | Clinic search prefers places with accessible entrances; records and prescriptions include specialists and equipment suppliers |
@@ -522,8 +541,8 @@ type Profile = {
   };
 };
 
-type SectionId = "visa" | "moveOut" | "housing" | "paperwork" | "health" | "household" | "moveIn";
-type DetailKind = "generic" | "factPack" | "placeFinder" | "commute" | "fitCheck" | "areaSearch";
+type SectionId = "visa" | "moveOut" | "packing" | "housing" | "paperwork" | "health" | "household" | "moveIn";
+type DetailKind = "generic" | "factPack" | "placeFinder" | "commute" | "fitCheck" | "areaSearch" | "packingList";
 
 type TaskTemplate = {
   id: string;
