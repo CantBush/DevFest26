@@ -1,6 +1,6 @@
-# DevFest26 Moving App: Build Plan
+# Movingly: Build Plan
 
-A mobile-first web app that streamlines moving. A short onboarding quiz learns about the move (where, who, budget, daily life), then Gemini turns a fixed checklist template into a personalized moving checklist with detailed task pages (housing recommendations, commute checks, nearby places, visa rules for international moves). Users can bookmark pages into an "Important!" list and change any quiz answer later from Settings.
+Movingly (temporary name) is a mobile-first web app that streamlines moving. A short onboarding quiz learns about the move (where, who, budget, daily life), then Gemini turns a fixed checklist template into a personalized moving checklist with detailed task pages (housing recommendations, commute checks, nearby places, visa rules for international moves). Users can bookmark pages into an "Important!" list and change any quiz answer later from Settings.
 
 Original sketch (screens, mascot sprites, loading animation):
 
@@ -41,7 +41,7 @@ Agents can write all of the code, but these steps need a logged-in human, a brow
 - [ ] **Firebase CLI login.** On each computer run `npm i -g firebase-tools` and `firebase login` (opens a browser). Agents can then run `firebase deploy --only firestore:rules`.
 - [ ] **App Hosting connection.** In the Firebase console > App Hosting, create a backend connected to this GitHub repo (`main` branch). This uses a GitHub OAuth popup. Store server secrets with `firebase apphosting:secrets:set GEMINI_API_KEY` (and `GOOGLE_MAPS_SERVER_KEY`).
 - [ ] **Mascot art.** Draw or export the mascot sprites (section 5) as transparent PNG or SVG. Agents can make placeholder SVGs, but the hand-drawn style should come from you.
-- [ ] **Answer the open questions** in section 16.
+- [x] **Answer the open questions** (decisions recorded in section 16).
 
 ---
 
@@ -76,9 +76,9 @@ Build against the fixtures first; swap in real data in Phase 2.
 - [ ] **A1. App shell.** Phone-width layout (`max-w-md`, centered), top back button, bottom-center Home button, settings gear, empty routes for every screen (section 12).
 - [ ] **A2. Onboarding quiz.** Declarative question config in `src/lib/quiz/questions.ts` (section 6), one question per screen, 4-part progress bar, Back/Next/Skip, Places autocomplete input, pin editor (max 5), chips, sliders, budget input with rent/buy label switch. Saves answers after every step (through Person B's `saveProfile`, or local state until it exists). "Build my checklist" leads to the loading screen.
 - [ ] **A3. Home.** Section rows with sprite, checkbox, and progress ("3/7"); done tasks struck through; "Important!" bookmark row pinned at the bottom; settings gear bottom-right.
-- [ ] **A4. Section page.** Back button, task rows with checkboxes, collapsible Rent/Buy sublist with a triangle toggle, Home button.
+- [ ] **A4. Section page.** Back button, bookmark toggle, task rows with checkboxes, collapsible Rent or Buy sublist with a triangle toggle, Home button.
 - [ ] **A5. Task detail page.** Renderer for every `DetailBlock` type, location line with a place search field, map card, bookmark toggle, back and Home buttons.
-- [ ] **A6. Important page.** List of bookmarked pages; tapping opens the page.
+- [ ] **A6. Important page.** List of bookmarked section and task pages; tapping opens the page.
 - [ ] **A7. Settings page.** Lists the four quiz sections with a summary of answers; tapping a section reopens the same quiz components in edit mode; Save calls `regeneratePlan` (Person B). Also: link Google account, start over.
 - [ ] **A8. Sprites, loading animation, polish.** Mascot per section, two-frame loading animation, empty and error states, tap targets, contrast.
 
@@ -144,9 +144,9 @@ flowchart TD
 | Onboarding quiz | `/onboarding` | One question per screen, 4-part progress bar (section 6) |
 | Loading | overlay | Mascot carrying a box, two-frame animation, rotating messages ("Packing your checklist...") |
 | Home | `/home` | Section rows (sprite, checkbox, progress), done items struck through, "Important!" row with bookmark icon at the bottom, settings gear bottom-right |
-| Section | `/section/[sectionId]` | Back button, task checkboxes, Rent/Buy sublist with triangle toggle, Home button bottom-center |
+| Section | `/section/[sectionId]` | Back button, bookmark toggle, task checkboxes, Rent or Buy sublist with triangle toggle, Home button bottom-center |
 | Task detail | `/task/[taskId]` | Back button and bookmark toggle; **Location** line (what the page is centered on) with a **Search** field; h1 heading + card; h2 heading + card; map card; Home button bottom-center |
-| Important | `/important` | Bookmarked pages ("Important!" in the sketch) |
+| Important | `/important` | Bookmarked section and task pages ("Important!" in the sketch) |
 | Settings | `/settings` | Edit quiz answers by section, link Google account, start over |
 
 `/` redirects to `/onboarding` when there is no saved profile and to `/home` otherwise. The sketch's "choose location" subtask is the Housing **area search** task (section 9).
@@ -178,7 +178,7 @@ Task-level overrides: grocery uses the food sprite; pharmacy and clinic use the 
 
 ## 6. Part 1: onboarding quiz
 
-Every answer is stored in the `Profile` (section 11). The quiz config is declarative (`id`, `section`, `title`, `input`, `showIf`) so Settings can reuse the same components. Answers save after each step, so a refresh resumes where the user left off. Questions marked **(added)** are not in the original notes but the checklist needs them; see section 16.
+Every answer is stored in the `Profile` (section 11). The quiz config is declarative (`id`, `section`, `title`, `input`, `showIf`) so Settings can reuse the same components. Answers save after each step, so a refresh resumes where the user left off. Questions marked **(added)** are not in the original notes; the team confirmed keeping them (section 16).
 
 ### The move
 
@@ -198,10 +198,11 @@ Every answer is stored in the `Profile` (section 11). The quiz config is declara
 | Question | Input | Shown when | Used by |
 | --- | --- | --- | --- |
 | How many people are moving, including you? | Stepper | Always | Household visibility, housing size |
-| Kids and their ages ("DRC", see section 16) | Repeatable age inputs | More than 1 person | School and childcare |
+| Kids and their ages | Repeatable age inputs | More than 1 person | School and childcare |
+| Does anyone moving have a disability? ("DRC" in the original notes) | Chips (mobility or wheelchair use, blind or low vision, deaf or hard of hearing, cognitive or developmental, chronic illness, mental health, other) plus optional free text | Always (optional) | Every section: see section 7.9 |
 | Pets | Chips (dog, cat, other) with counts | Always | Household pets, pet import rules |
-| What do you want to keep? | Chips (furniture, car, electronics, clothes only, sentimental items, instruments) plus free text | International | Mover, sea vs air, sell or store |
-| Any special considerations or needs? | Chips (accessibility, medical, dietary, religious, elder care, none) plus free text | Always | Household, housing filters, health |
+| What do you want to keep? | Chips (furniture, car, electronics, clothes only, sentimental items, instruments, medical or mobility equipment) plus free text | International | Mover, sea vs air, sell or store |
+| Any other special considerations or needs? | Chips (medical, dietary, religious, elder care, none) plus free text | Always | Household, housing filters, health |
 | Anyone staying behind you want to keep in touch with? **(added)** | Free text | Always (optional) | Contact rhythm task |
 
 ### Money and work
@@ -287,6 +288,7 @@ If they already have a place, this is a fit check. If they named a city, state, 
 | `paperwork.banks` | Banks and bills | Always | `generic` |
 | `paperwork.bag` | Papers in the bag (carry these, don't ship them) | Always | `generic` |
 | `paperwork.workLicense` | Transfer your work license | Regulated job | `generic` |
+| `paperwork.disability` | Transfer disability documents and benefits (accessible parking permit, benefits, school or work accommodations) | Has disabilities | `generic` |
 | `paperwork.cardsAbroad` | Cards that work abroad | International | `generic` |
 | `paperwork.backupCard` | A backup card from a different provider | International | `generic` |
 | `paperwork.taxes` | Tax obligations in both countries | International | `generic` |
@@ -306,12 +308,13 @@ Name the task. Insurers appear only as examples, never as the recommendation.
 
 ### 7.6 Household (`household`)
 
-Replaces "Family". The whole section is hidden when they are moving alone, with no pets and no special needs.
+Replaces "Family". The whole section is hidden when they are moving alone, with no pets, no disabilities, and no special needs.
 
 | ID | Task | Shown when | Detail kind |
 | --- | --- | --- | --- |
-| `household.school` | School and childcare | Has kids | `placeFinder` |
-| `household.pets` | Pets: vet records, travel, import rules | Has pets | `generic` |
+| `household.school` | School and childcare (including special education services when a child has a disability) | Has kids | `placeFinder` |
+| `household.pets` | Pets: vet records, travel, import rules (service animals called out separately) | Has pets | `generic` |
+| `household.accessibility` | Accessibility plan: home modifications, equipment, support services, and local disability organizations | Has disabilities | `placeFinder` |
 | `household.needs` | Special needs from your quiz | Has special needs | `generic` |
 | `household.contact` | A contact rhythm for people who stayed | Named someone staying behind | `generic` |
 
@@ -340,6 +343,22 @@ Replaces "Family". The whole section is hidden when they are moving alone, with 
 | Phone numbers and eSIM (for example Airalo) | `moveOut.phone` |
 | Medical checkups | `health.checkup` |
 | Expat health insurance | `health.coverage` |
+
+### 7.9 Disabilities across the checklist
+
+When anyone moving has a disability, it shapes the whole plan, not only Household:
+
+| Section | What changes |
+| --- | --- |
+| Visa and entry | Fact pack notes rules for bringing medications and medical or mobility equipment |
+| Moving out | Packing and mover tasks include protecting medical or mobility equipment and arranging help on move day |
+| Housing | Fit check and area search weigh step-free access, elevators, ground-floor units, and nearby accessible transit; rent tasks mention requesting reasonable modifications |
+| Paperwork | `paperwork.disability`: accessible parking permit, benefits, school or work accommodations |
+| Health | Clinic search prefers places with accessible entrances; records and prescriptions include specialists and equipment suppliers |
+| Household | `household.accessibility`; school task covers special education services; the section is never hidden |
+| Moving in | Transport task covers accessible transit and paratransit; place finders prefer accessible places |
+
+Every task template that changes lists `household.disabilities` in its `dependsOn`, so editing this answer in Settings refreshes those pages. Places requests add `places.accessibilityOptions` to the field mask when disabilities are present, and place cards show wheelchair-accessible entrance, parking, and restroom badges.
 
 ---
 
@@ -397,6 +416,7 @@ Retry once on a parse failure, then fall back to template text.
 - Label estimates clearly ("about", "AI estimate"), especially rent ranges.
 - Country rules come from the fact pack, with sources. When unsure, say so and point to the official government or embassy site.
 - Name insurers, movers, and eSIM providers only as examples ("such as..."), never as a recommendation.
+- When the profile lists disabilities, account for them in every task (section 7.9), using respectful, person-first language.
 - Short, plain language; every task has concrete next steps; no legal or medical advice framing.
 
 Visa, passport, tax, and insurance pages always show: "AI-generated. Verify with the official source before acting."
@@ -475,6 +495,8 @@ type Profile = {
     people: number;
     kids: { age: number }[];
     pets: { kind: string; count: number }[];
+    disabilities: string[];                            // chips from the quiz
+    disabilityNotes?: string;
     specialNeeds: string[];
     stayingBehind: string[];
   };
@@ -535,6 +557,7 @@ type FactPack = {
   apostille: { hagueConvention: boolean | null; documents: string[]; notes: string };
   drivingRule: { answer: "local" | "idp" | "both" | "unknown"; notes: string };
   petImport?: string;
+  medicationAndEquipment?: string;                     // only when the profile lists disabilities
   sources: { title: string; url: string }[];
   generatedAt: string;
 };
@@ -554,7 +577,10 @@ type TaskDetail = {
   taskId: string;
   location?: { label: string; lat: number; lng: number };
   blocks: DetailBlock[];
-  places: Record<string, { name: string; address: string; lat: number; lng: number; rating?: number; mapsUrl: string }>;
+  places: Record<string, {
+    name: string; address: string; lat: number; lng: number; rating?: number; mapsUrl: string;
+    accessibility?: { entrance?: boolean; parking?: boolean; restroom?: boolean };
+  }>;
   sources?: { title: string; url: string }[];
   inputsHash: string;
   generatedAt: string;
@@ -667,14 +693,14 @@ DEMO_FIXTURES=false
 Two demo profiles, saved as fixtures with a dev-only "Load demo profile" button so the quiz can be skipped on stage.
 
 - **International:** moving from Seattle, USA to Seoul, South Korea for a job; one job pin with a 40-minute limit; transit; renting; one cat; keeping clothes, electronics, and sentimental items; interests: pho, Limbus Company, taekwondo.
-- **Domestic:** moving from Chicago to Austin for grad school; one campus pin with a 25-minute limit; bike; alone, no pets, no special needs (Household is hidden); renting.
+- **Domestic:** moving from Chicago to Austin for grad school; one campus pin with a 25-minute limit; bike; alone, no pets, no disabilities, no special needs (Household is hidden); renting.
 
 Flow:
 1. Take the quiz as the international profile (or load it) and watch the loading mascot.
 2. Home shows Visa and entry pinned first; open `visa.passport` to show the fact pack, sources, and passport check.
 3. Open Housing > Choose a location: neighborhoods with real commute times, nearby pho and taekwondo, apartments; choose one.
 4. Bookmark that page and show it in "Important!".
-5. Check off a few tasks, then open Settings and remove the cat: Household updates, and checkmarks stay.
+5. Check off a few tasks, then open Settings and add a mobility disability: `paperwork.disability` and `household.accessibility` appear, housing and clinic results favor accessible places, and checkmarks stay.
 6. Switch to the domestic profile to show the shorter checklist with no Visa or Household section.
 
 ---
@@ -693,15 +719,15 @@ Flow:
 
 ---
 
-## 16. Open questions
+## 16. Decisions
 
-1. **"DRC/pets" in the quiz notes.** This plan reads "DRC" as dependents (kids, with ages for school and childcare). What did it mean?
-2. **Added quiz questions.** Current city or country, target move date, current home (rent or own), regulated job, and anyone staying behind. Keep or drop each?
-3. **Rent and buy sublists.** This plan shows only the one they chose. Should both be visible?
-4. **Savings buffer.** Placed under Paperwork for international moves. Is that the right section?
-5. **Bookmarks.** This plan allows bookmarking task pages and section pages. Task pages only?
-6. **Amenities.** "Where my limbus company" is read as hobby and fandom spots (game stores, PC cafes, meetups), searched with Places. Correct?
-7. **App name.**
+1. **"DRC" means disabilities.** It is its own quiz question and is considered across the whole checklist (section 7.9).
+2. **Added quiz questions are kept:** current city or country, target move date, current home (rent or own), regulated job, and anyone staying behind.
+3. **Housing shows only what the user chose:** the Rent sublist or the Buy sublist, never both. Changing the answer in Settings swaps them.
+4. **Savings buffer stays under Paperwork** for international moves, for now.
+5. **Bookmarks work on section pages and task pages.**
+6. **Amenities** ("where my limbus company") means hobby and fandom spots (game stores, PC cafes, meetups), searched with Places.
+7. **App name:** Movingly (temporary).
 
 ---
 
