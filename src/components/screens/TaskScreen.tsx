@@ -87,9 +87,11 @@ export function TaskScreen() {
 
       {detail && (
         <div className="flex flex-col gap-5">
-          {detail.location && <LocationSearch location={detail.location} onResults={setSearched} />}
+          {detail.location && task.detailKind !== "packingList" && (
+            <LocationSearch location={detail.location} onResults={setSearched} />
+          )}
           <BlockRenderer detail={detail} profile={app.profile} />
-          <MapView points={mapPoints(detail, app.profile, searched)} />
+          {task.detailKind !== "packingList" && <MapView points={mapPoints(detail, app.profile, searched)} />}
 
           {detail.sources && detail.sources.length > 0 && (
             <div>

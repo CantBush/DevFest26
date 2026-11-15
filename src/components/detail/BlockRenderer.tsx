@@ -3,6 +3,7 @@
 import { CheckIcon, CloseIcon, ExternalIcon } from "@/components/Icons";
 import { useAppState } from "@/components/state/AppState";
 import type { DetailBlock, Profile, TaskDetail } from "@/lib/types";
+import { PackingItems } from "./PackingItems";
 import { PassportCheck } from "./PassportCheck";
 import { PlaceCard } from "./PlaceCard";
 
@@ -122,6 +123,9 @@ function Block({ block, detail, profile }: { block: DetailBlock; detail: TaskDet
 
     case "passportCheck":
       return <PassportCheck minMonthsAfterEntry={block.minMonthsAfterEntry} moveDate={profile.moveDate} />;
+
+    case "packingItems":
+      return <PackingItems taskId={detail.taskId} items={block.items} />;
 
     case "links":
       return (

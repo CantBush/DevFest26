@@ -114,10 +114,12 @@ function readStored(): Stored {
       const parsed = schema.safeParse(value);
       return parsed.success ? parsed.data : fallback;
     };
+    const checklist = pick(ChecklistSchema.nullable(), data.checklist, null);
     return {
       draft: (data.draft as QuizDraft) ?? {},
       profile: pick(ProfileSchema.nullable(), data.profile, null),
-      checklist: pick(ChecklistSchema.nullable(), data.checklist, null),
+      // Plans saved before the Packing List section existed are rebuilt by the home screen.
+      checklist: checklist?.sections.some((section) => section.id === "packing") ? checklist : null,
       progress: pick(z.record(z.string(), z.boolean()), data.progress, {}),
       bookmarks: pick(z.array(BookmarkSchema), data.bookmarks, []),
       taskDetails: pick(z.record(z.string(), TaskDetailSchema), data.taskDetails, {}),
