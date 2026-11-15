@@ -246,24 +246,24 @@ export const QUESTIONS: Question[] = [
   {
     id: "culture",
     section: "daily",
-    title: "Culture: what helps you feel at home?",
-    help: "Food, community, faith. Where my pho hanoi?",
+    title: "What helps you feel at home?",
+    help: "Favorite foods, community groups, places of worship, or anything that reminds you of home.",
     optional: true,
     isAnswered: (d) => hasItems(d.culture),
   },
   {
     id: "amenities",
     section: "daily",
-    title: "Amenities: hobbies and fandoms?",
-    help: "Game stores, PC cafes, meetups. Where my Limbus Company?",
+    title: "What hobbies and interests do you have?",
+    help: "Things you like to do or be around, like games, books, crafts, or fan meetups.",
     optional: true,
     isAnswered: (d) => hasItems(d.amenities),
   },
   {
     id: "recreation",
     section: "daily",
-    title: "Recreation: sports and activities?",
-    help: "Where my taekwondo?",
+    title: "How do you like to stay active?",
+    help: "Sports, classes, or outdoor activities you want nearby.",
     optional: true,
     isAnswered: (d) => hasItems(d.recreation),
   },
@@ -314,8 +314,15 @@ export const SPECIAL_NEEDS_SUGGESTIONS = ["medical", "dietary", "religious", "el
 
 export const PET_SUGGESTIONS = ["dog", "cat", "other"];
 
-export const CULTURE_SUGGESTIONS = ["pho", "Korean food", "church", "mosque", "temple", "farmers market"];
-export const AMENITY_SUGGESTIONS = ["Limbus Company", "board game cafe", "PC cafe", "anime store", "library"];
-export const RECREATION_SUGGESTIONS = ["taekwondo", "climbing", "running", "basketball", "yoga", "swimming"];
+export const CULTURE_SUGGESTIONS = [
+  "food from home",
+  "international grocery",
+  "place of worship",
+  "cultural community",
+  "farmers market",
+  "language exchange",
+];
+export const AMENITY_SUGGESTIONS = ["gaming", "board game cafe", "library", "bookstore", "arts and crafts", "fan meetups"];
+export const RECREATION_SUGGESTIONS = ["gym", "martial arts", "running", "team sports", "yoga", "swimming", "hiking"];
 
 export const CURRENCIES = ["USD", "CAD", "EUR", "GBP", "KRW", "JPY", "VND", "MXN", "AUD", "INR"];
