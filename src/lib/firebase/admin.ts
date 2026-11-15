@@ -32,12 +32,15 @@ function hasGcloudLogin(): boolean {
 }
 
 // Verifying ID tokens only needs the project ID, but Firestore needs real credentials.
-// Without them every Firestore call retries for a long time before failing, so local
-// dev skips server-side storage unless a service account or gcloud login is present.
+// Without them every Firestore call retries for a long time before failing, so a local
+// server (dev or `npm start`) skips server-side storage unless a service account or
+// gcloud login is present. App Hosting runs on Cloud Run, which sets K_SERVICE.
 export function canUseAdminFirestore(): boolean {
-  if (process.env.NODE_ENV === "production") return true;
   return Boolean(
-    process.env.FIREBASE_SERVICE_ACCOUNT_JSON || process.env.GOOGLE_APPLICATION_CREDENTIALS || hasGcloudLogin(),
+    process.env.K_SERVICE ||
+      process.env.FIREBASE_SERVICE_ACCOUNT_JSON ||
+      process.env.GOOGLE_APPLICATION_CREDENTIALS ||
+      hasGcloudLogin(),
   );
 }
 

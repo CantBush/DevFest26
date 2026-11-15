@@ -16,6 +16,7 @@ function database(uid: string): Firestore | null {
 }
 
 export async function consumeRegeneration(uid: string, profileVersion: number): Promise<"ok" | "capped"> {
+  if (!canUseAdminFirestore()) return "ok";
   const db = database(uid);
   if (!db) {
     if (process.env.NODE_ENV === "production") {
