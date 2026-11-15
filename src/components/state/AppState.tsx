@@ -13,8 +13,10 @@ import {
 } from "react";
 import { GoogleAuthProvider, linkWithPopup } from "firebase/auth";
 import { z } from "zod";
+import { isTaskDetailStale, regeneratePlan as previewPlan } from "@/lib/checklist/regenerate";
 import { ensureSignedIn, isFirebaseConfigured } from "@/lib/firebase/client";
-import { sampleAreaSearchDetail, sampleChecklist, sampleGenericDetail } from "@/lib/fixtures";
+import { fetchPlaces, fetchPlan, fetchTaskDetail } from "@/lib/firebase/api";
+import { savePlan, saveProfile as persistProfile, saveTaskDetail, startOver } from "@/lib/firebase/db";
 import type { QuizDraft } from "@/lib/quiz/questions";
 import {
   BookmarkSchema,
@@ -24,7 +26,6 @@ import {
   type Bookmark,
   type Checklist,
   type ChecklistSection,
-  type DetailBlock,
   type PlacesResponse,
   type PlaceRef,
   type Profile,
@@ -32,14 +33,11 @@ import {
   type TaskDetail,
 } from "@/lib/types";
 
-// Frontend data seam. Every screen reads and writes through this provider.
-// Until Phase 2 (PLAN.md section 3.5) it persists to localStorage and answers with
-// fixtures; integration swaps these internals for Person B's src/lib/firebase/db.ts
-// hooks and the /api routes without touching the screens.
+// Frontend data seam. Screens read and write through this provider. Plan and
+// task pages come from the /api routes; localStorage keeps the latest copy and
+// Firestore keeps a copy another device can load.
 
-const STORAGE_KEY = "movingly:v1";
-const FAKE_PLAN_DELAY_MS = 1800;
-const FAKE_DETAIL_DELAY_MS = 900;
+const STORAGE_KEY = "movingly:v2";
 
 type Stored = {
   draft: QuizDraft;
@@ -78,8 +76,34 @@ type AppStateValue = Stored & {
 
 const AppStateContext = createContext<AppStateValue | null>(null);
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const subscribeNever = () => () => {};
+const PLACE_SEARCH_RADIUS_M = 8000;
+
+async function rememberPlan(profile: Profile, checklist: Checklist) {
+  try {
+    await persistProfile(profile);
+    await savePlan(checklist);
+  } catch (error) {
+    console.error("Could not save the plan.", error);
+  }
+}
+
+async function rememberDetail(detail: TaskDetail) {
+  try {
+    await saveTaskDetail(detail);
+  } catch (error) {
+    console.error("Could not save the task page.", error);
+  }
+}
+
+function housingTaskIds(profile: Profile, checklist: Checklist): string[] {
+  const visible = new Set(checklist.sections.flatMap((section) => section.tasks.map((task) => task.id)));
+  const wanted = [
+    profile.destination.mode === "address" ? "housing.fitCheck" : "housing.areaSearch",
+    ...(profile.pins.length > 0 ? ["housing.commute"] : []),
+  ];
+  return wanted.filter((id) => visible.has(id));
+}
 
 function readStored(): Stored {
   try {
@@ -101,42 +125,6 @@ function readStored(): Stored {
   } catch {
     return EMPTY;
   }
-}
-
-function placeholderDetail(task: Task, profile: Profile | null, checklist: Checklist | null): TaskDetail {
-  const place = profile?.chosenArea ?? profile?.destination.place;
-  const factPack = checklist?.factPack;
-  const blocks: DetailBlock[] = [
-    { type: "heading", level: 1, text: task.title },
-    { type: "text", text: task.summary },
-  ];
-
-  if (task.detailKind === "factPack" && factPack) {
-    if (task.id === "visa.permit") {
-      blocks.push({ type: "heading", level: 2, text: "Visa options" });
-      blocks.push({ type: "steps", items: factPack.visaOptions.map((v) => `${v.name}: ${v.forWho}. ${v.renewal}`) });
-    }
-    if (task.id === "visa.passport" && factPack.passportRule.minMonthsValidAfterEntry !== null) {
-      blocks.push({ type: "passportCheck", minMonthsAfterEntry: factPack.passportRule.minMonthsValidAfterEntry });
-    }
-    blocks.push({ type: "callout", tone: "info", text: factPack.passportRule.notes });
-  }
-
-  blocks.push({
-    type: "callout",
-    tone: "info",
-    text: "Sample page. Personalized guidance appears here once the backend is connected.",
-  });
-
-  return {
-    taskId: task.id,
-    location: place ? { label: place.label, lat: place.lat, lng: place.lng } : undefined,
-    blocks,
-    places: {},
-    sources: task.detailKind === "factPack" ? factPack?.sources : undefined,
-    inputsHash: "placeholder",
-    generatedAt: new Date().toISOString(),
-  };
 }
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
@@ -163,24 +151,57 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, profile }));
   }, []);
 
-  const generatePlan = useCallback(async (profile: Profile) => {
-    await delay(FAKE_PLAN_DELAY_MS);
-    const checklist: Checklist = {
-      ...sampleChecklist,
-      profileVersion: profile.version,
-      generatedAt: new Date().toISOString(),
-    };
-    setState((s) => ({ ...s, checklist }));
-    return checklist;
+  const openTask = useCallback(async (profile: Profile, taskId: string, factPack?: Checklist["factPack"]) => {
+    const detail = await fetchTaskDetail(profile, taskId, factPack);
+    setState((s) => ({ ...s, taskDetails: { ...s.taskDetails, [taskId]: detail } }));
+    void rememberDetail(detail);
+    return detail;
   }, []);
 
-  const regeneratePlan = useCallback(
-    async (_oldProfile: Profile, newProfile: Profile) => {
-      // Checkmarks and bookmarks are keyed by task id, so they survive a rebuild.
-      setState((s) => ({ ...s, taskDetails: {} }));
-      return generatePlan(newProfile);
+  const prefetchHousing = useCallback(
+    (profile: Profile, checklist: Checklist) => {
+      for (const taskId of housingTaskIds(profile, checklist)) {
+        void openTask(profile, taskId, checklist.factPack).catch((error) => {
+          console.error(`Could not prefetch ${taskId}.`, error);
+        });
+      }
     },
-    [generatePlan],
+    [openTask],
+  );
+
+  const generatePlan = useCallback(
+    async (profile: Profile) => {
+      const checklist = await fetchPlan(profile);
+      setState((s) => ({ ...s, profile, checklist }));
+      void rememberPlan(profile, checklist);
+      prefetchHousing(profile, checklist);
+      return checklist;
+    },
+    [prefetchHousing],
+  );
+
+  const regeneratePlan = useCallback(
+    async (oldProfile: Profile, newProfile: Profile) => {
+      const preview = previewPlan(oldProfile, newProfile, stateRef.current.checklist ?? undefined);
+      setState((s) => {
+        const taskDetails = { ...s.taskDetails };
+        for (const id of preview.staleTaskIds) delete taskDetails[id];
+        return { ...s, profile: newProfile, checklist: preview.checklist, taskDetails };
+      });
+      const requestedVersion = newProfile.version;
+      void fetchPlan(newProfile)
+        .then((checklist) => {
+          if (stateRef.current.profile?.version !== requestedVersion) return;
+          setState((s) => ({ ...s, checklist }));
+          void rememberPlan(newProfile, checklist);
+          prefetchHousing(newProfile, checklist);
+        })
+        .catch((error) => {
+          console.error("Could not refresh the personalized checklist.", error);
+        });
+      return preview.checklist;
+    },
+    [prefetchHousing],
   );
 
   const setTaskDone = useCallback((taskId: string, done: boolean) => {
@@ -203,27 +224,20 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, bookmarks: s.bookmarks.filter((b) => b.id !== id) }));
   }, []);
 
-  const loadTaskDetail = useCallback(async (task: Task) => {
-    const cached = stateRef.current.taskDetails[task.id];
-    if (cached) return cached;
-    await delay(FAKE_DETAIL_DELAY_MS);
-    const { profile, checklist } = stateRef.current;
-    const detail =
-      task.id === sampleAreaSearchDetail.taskId
-        ? sampleAreaSearchDetail
-        : task.id === sampleGenericDetail.taskId
-          ? sampleGenericDetail
-          : placeholderDetail(task, profile, checklist);
-    setState((s) => ({ ...s, taskDetails: { ...s.taskDetails, [task.id]: detail } }));
-    return detail;
-  }, []);
+  const loadTaskDetail = useCallback(
+    async (task: Task) => {
+      const { profile, checklist, taskDetails } = stateRef.current;
+      if (!profile) throw new Error("Save a profile before opening a task.");
+      const cached = taskDetails[task.id];
+      if (cached && !isTaskDetailStale(cached, profile)) return cached;
+      return openTask(profile, task.id, checklist?.factPack);
+    },
+    [openTask],
+  );
 
-  const searchPlaces = useCallback(async (query: string) => {
-    await delay(300);
-    const q = query.trim().toLowerCase();
-    return Object.entries(sampleAreaSearchDetail.places)
-      .filter(([, p]) => p.name.toLowerCase().includes(q) || p.address.toLowerCase().includes(q))
-      .map(([placeId, p]) => ({ placeId, ...p }));
+  const searchPlaces = useCallback(async (query: string, near: { lat: number; lng: number }) => {
+    const { places } = await fetchPlaces(query, near, PLACE_SEARCH_RADIUS_M);
+    return places;
   }, []);
 
   const chooseArea = useCallback((place: PlaceRef) => {
@@ -232,6 +246,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   const resetAll = useCallback(() => {
     setState(EMPTY);
+    void startOver().catch(() => {});
   }, []);
 
   const linkGoogleAccount = useCallback(async () => {

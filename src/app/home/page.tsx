@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BookmarkIcon } from "@/components/Icons";
 import { LoadingMascot } from "@/components/LoadingMascot";
 import { Mascot } from "@/components/Mascot";
@@ -18,16 +18,36 @@ function daysUntil(isoDate?: string) {
 export default function HomePage() {
   const app = useRequireProfile();
   const requested = useRef(false);
+  const [failed, setFailed] = useState(false);
   const { ready, profile, checklist, generatePlan } = app;
 
   useEffect(() => {
     if (ready && profile && !checklist && !requested.current) {
       requested.current = true;
-      void generatePlan(profile);
+      void generatePlan(profile).catch(() => setFailed(true));
     }
   }, [ready, profile, checklist, generatePlan]);
 
-  if (!ready || !profile || !checklist) return <LoadingMascot fullScreen />;
+  if (!ready || !profile) return <LoadingMascot fullScreen />;
+  if (!checklist && failed) {
+    return (
+      <AppShell showHome={false} showSettings>
+        <h1 className="text-4xl">My move</h1>
+        <p className="mt-3 font-semibold text-warn">Couldn&apos;t build your checklist. Try again in a moment.</p>
+        <button
+          type="button"
+          className="btn btn-primary mt-6"
+          onClick={() => {
+            setFailed(false);
+            void generatePlan(profile).catch(() => setFailed(true));
+          }}
+        >
+          Try again
+        </button>
+      </AppShell>
+    );
+  }
+  if (!checklist) return <LoadingMascot fullScreen />;
 
   const days = daysUntil(profile.moveDate);
   const destination = profile.chosenArea?.label ?? profile.destination.place.label;

@@ -23,6 +23,7 @@ export default function OnboardingPage() {
   const app = useAppState();
   const router = useRouter();
   const [building, setBuilding] = useState(false);
+  const [buildError, setBuildError] = useState<string | null>(null);
 
   useEffect(() => {
     if (app.ready && app.profile && !building) router.replace("/home");
@@ -32,16 +33,27 @@ export default function OnboardingPage() {
   if (building) return <LoadingMascot fullScreen />;
 
   const build = async (profile: Profile) => {
+    setBuildError(null);
     setBuilding(true);
-    app.saveProfile(profile);
-    await app.generatePlan(profile);
-    router.replace("/home");
+    try {
+      await app.generatePlan(profile);
+      router.replace("/home");
+    } catch (error) {
+      setBuilding(false);
+      setBuildError(error instanceof Error ? error.message : "Could not build your checklist.");
+    }
   };
 
-  return <Quiz onBuild={build} />;
+  return <Quiz onBuild={build} buildError={buildError} />;
 }
 
-function Quiz({ onBuild }: { onBuild: (profile: Profile) => Promise<void> }) {
+function Quiz({
+  onBuild,
+  buildError,
+}: {
+  onBuild: (profile: Profile) => Promise<void>;
+  buildError: string | null;
+}) {
   const { draft, saveDraft } = useAppState();
   const hasStarted = Object.keys(draft).length > 0;
   const [started, setStarted] = useState(hasStarted);
@@ -127,7 +139,7 @@ function Quiz({ onBuild }: { onBuild: (profile: Profile) => Promise<void> }) {
       <div className="flex flex-1 flex-col gap-6">
         <ProgressBar section={question.section} fraction={fraction} />
         <QuestionView key={question.id} question={question} draft={draft} onChange={saveDraft} />
-        {error && <p className="font-semibold text-warn">{error}</p>}
+        {(error || buildError) && <p className="font-semibold text-warn">{error ?? buildError}</p>}
 
         <div className="mt-auto flex items-center gap-3 pt-4">
           <button type="button" onClick={back} className="min-h-12 rounded-full px-4 font-bold hover:bg-wash">

@@ -107,9 +107,9 @@ Test each piece directly (unit tests, `curl`, or a scratch page) without waiting
 
 ### 3.5 Phase 2: together
 
-- [ ] **I1. Connect.** Quiz finish > loading screen > `/api/plan` > Home with real data. Remove fixture imports from screens.
-- [ ] **I2. Housing detail page end to end** (area search and fit check). It needs both maps UI and Gemini output, so whoever finishes their track first takes it.
-- [ ] **I3. Settings regeneration end to end.** Change an answer, see the checklist update, checkmarks kept.
+- [x] **I1. Connect.** Quiz finish > loading screen > `/api/plan` > Home with real data. Remove fixture imports from screens.
+- [x] **I2. Housing detail page end to end** (area search and fit check). It needs both maps UI and Gemini output, so whoever finishes their track first takes it.
+- [x] **I3. Settings regeneration end to end.** Change an answer, see the checklist update, checkmarks kept.
 - [ ] **I4. Deploy** to Firebase App Hosting, add the domain to Firebase Auth and the browser Maps key, rehearse the demo script (section 14) on a phone.
 
 ### 3.6 Working with Cursor agents

@@ -26,11 +26,16 @@ export default function SettingsPage() {
 
   const save = async (next: Profile) => {
     setSaving(true);
-    app.saveProfile(next);
-    await app.regeneratePlan(profile, next);
-    setSaving(false);
-    setEditing(null);
-    setMessage("Checklist updated. Your checkmarks and bookmarks are kept.");
+    try {
+      app.saveProfile(next);
+      await app.regeneratePlan(profile, next);
+      setEditing(null);
+      setMessage("Checklist updated. Your checkmarks and bookmarks are kept.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not update the checklist.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (editing) {
