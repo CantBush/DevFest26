@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- housing / shelter: mascot under an umbrella -->
+  <path d="M20 58 C19 42 22 28 31 28 C40 28 43 42 42 58 C40 55.5 38 55.5 36.5 58 C35 55.5 33 55.5 31 58 C29 55.5 27 55.5 25.5 58 C24 55.5 22 55.5 20 58 Z" fill="#fff"/>
+  <circle cx="27.5" cy="39" r="1.5" fill="#111" stroke="none"/>
+  <circle cx="34.5" cy="39" r="1.5" fill="#111" stroke="none"/>
+  <path d="M29.5 43.5 Q31 44.8 32.5 43.5"/>
+  <path d="M41 46 L45 43"/>
+  <path d="M45 43 L45 14"/>
+  <path d="M27 17 Q45 2 63 17 Q58.5 13.5 54 17 Q49.5 13.5 45 17 Q40.5 13.5 36 17 Q31.5 13.5 27 17 Z" fill="#fff"/>
+  <path d="M8 26 l1.5 3 M4 34 l2 2.5" stroke-width="1.6"/>
+</svg>

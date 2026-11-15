@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- paperwork: mascot holding a document -->
+  <path d="M12 58 C11 38 14 18 25 18 C36 18 39 38 38 58 C35.8 55 33.6 55 31.8 58 C30 55 27.8 55 26 58 C24.2 55 22 55 20.2 58 C18.4 55 16.2 55 14.4 58 C13.6 56.8 12.8 56.8 12 58 Z" fill="#fff"/>
+  <circle cx="21" cy="31" r="1.5" fill="#111" stroke="none"/>
+  <circle cx="29" cy="31" r="1.5" fill="#111" stroke="none"/>
+  <path d="M23.5 36 Q25 37.2 26.5 36"/>
+  <path d="M38 22 L54 20 L57 46 L41 48 Z" fill="#fff"/>
+  <path d="M42 27 L52 26 M42.6 32 L52.6 31 M43.2 37 L50 36.2" stroke-width="1.5"/>
+  <path d="M37 42 L42 40"/>
+</svg>

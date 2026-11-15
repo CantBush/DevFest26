@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- international: mascot riding along with an airplane ("wheee") -->
+  <path d="M10 58 C9 42 12 28 21 28 C30 28 33 42 32 58 C30 55.5 28 55.5 26.5 58 C25 55.5 23 55.5 21 58 C19 55.5 17 55.5 15.5 58 C14 55.5 12 55.5 10 58 Z" fill="#fff"/>
+  <circle cx="17.5" cy="38" r="1.5" fill="#111" stroke="none"/>
+  <circle cx="24.5" cy="38" r="1.5" fill="#111" stroke="none"/>
+  <ellipse cx="21" cy="43.5" rx="1.6" ry="1.9"/>
+  <path d="M31 40 L36 34"/>
+  <g transform="rotate(-20 46 22)">
+    <path d="M34 22 L58 22 Q61 22 61 24 Q61 26 58 26 L34 26 Q32 24 34 22 Z" fill="#fff"/>
+    <path d="M46 22 L40 13 L44 13 L52 22" fill="#fff"/>
+    <path d="M46 26 L40 34 L44 34 L52 26" fill="#fff"/>
+    <path d="M35 22 L33 17 L36 17 L39 22" fill="#fff"/>
+  </g>
+  <path d="M4 20 h5 M2 26 h4" stroke-width="1.6" stroke-dasharray="2 3"/>
+</svg>

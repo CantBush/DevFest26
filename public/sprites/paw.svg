@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- household: mascot with a heart and a paw print -->
+  <path d="M10 58 C9 38 12 18 23 18 C34 18 37 38 36 58 C33.8 55 31.6 55 29.8 58 C28 55 25.8 55 24 58 C22.2 55 20 55 18.2 58 C16.4 55 14.2 55 12.4 58 C11.6 56.8 10.8 56.8 10 58 Z" fill="#fff"/>
+  <circle cx="19" cy="31" r="1.5" fill="#111" stroke="none"/>
+  <circle cx="27" cy="31" r="1.5" fill="#111" stroke="none"/>
+  <path d="M21.5 36 Q23 37.2 24.5 36"/>
+  <path d="M48 30 C44 26 39 30 42 35 L48 41 L54 35 C57 30 52 26 48 30 Z" fill="#fff"/>
+  <ellipse cx="50" cy="53" rx="4" ry="3.2" fill="#fff"/>
+  <circle cx="44.5" cy="48.5" r="1.6" fill="#fff"/>
+  <circle cx="48.5" cy="46" r="1.6" fill="#fff"/>
+  <circle cx="52.5" cy="46" r="1.6" fill="#fff"/>
+  <circle cx="56" cy="48.8" r="1.6" fill="#fff"/>
+</svg>
