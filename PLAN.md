@@ -87,13 +87,13 @@ Build against the fixtures first; swap in real data in Phase 2.
 
 Test each piece directly (unit tests, `curl`, or a scratch page) without waiting for screens.
 
-- [ ] **B1. Data layer** (`src/lib/firebase/db.ts`), done first because Person A needs it: `saveProfile`, `useProfile`, `usePlan`, `setTaskDone`, `useProgress`, `toggleBookmark`, `useBookmarks`, `saveTaskDetail`. Deploy `firestore.rules`.
-- [ ] **B2. Checklist template and rules.** `src/lib/checklist/template.ts` (section 7) and `buildChecklist(profile)`. Vitest tests with both fixture profiles (for example: the domestic solo profile has no Visa and no Household section).
-- [ ] **B3. Gemini plan generation.** `src/lib/gemini/` client and prompts; `POST /api/plan`: fact pack (international only), personalization, merge into the template, fallback to template text on failure (section 8).
-- [ ] **B4. Maps server helpers.** `src/lib/maps/places.ts` and `routes.ts`; `POST /api/places` and `POST /api/commute` (section 9).
-- [ ] **B5. Task detail generation.** `POST /api/task-detail` with one handler per detail kind: `generic`, `factPack`, `placeFinder`, `commute`, `fitCheck`, `areaSearch`. Caches by `inputsHash`.
-- [ ] **B6. Regeneration.** `regeneratePlan(oldProfile, newProfile)` (section 10): rebuild, keep checkmarks and bookmarks, invalidate only stale AI content.
-- [ ] **B7. Demo safety.** `DEMO_FIXTURES=true` mode that serves saved responses for both demo profiles; a cap on regenerations per user.
+- [x] **B1. Data layer** (`src/lib/firebase/db.ts`), done first because Person A needs it: `saveProfile`, `useProfile`, `usePlan`, `setTaskDone`, `useProgress`, `toggleBookmark`, `useBookmarks`, `saveTaskDetail`. Deploy `firestore.rules`.
+- [x] **B2. Checklist template and rules.** `src/lib/checklist/template.ts` (section 7) and `buildChecklist(profile)`. Vitest tests with both fixture profiles (for example: the domestic solo profile has no Visa and no Household section).
+- [x] **B3. Gemini plan generation.** `src/lib/gemini/` client and prompts; `POST /api/plan`: fact pack (international only), personalization, merge into the template, fallback to template text on failure (section 8).
+- [x] **B4. Maps server helpers.** `src/lib/maps/places.ts` and `routes.ts`; `POST /api/places` and `POST /api/commute` (section 9).
+- [x] **B5. Task detail generation.** `POST /api/task-detail` with one handler per detail kind: `generic`, `factPack`, `placeFinder`, `commute`, `fitCheck`, `areaSearch`. Caches by `inputsHash`.
+- [x] **B6. Regeneration.** `regeneratePlan(oldProfile, newProfile)` (section 10): rebuild, keep checkmarks and bookmarks, invalidate only stale AI content.
+- [x] **B7. Demo safety.** `DEMO_FIXTURES=true` mode that serves saved responses for both demo profiles; a cap on regenerations per user.
 
 ### 3.4 File ownership (prevents merge conflicts)
 
